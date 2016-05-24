@@ -1,6 +1,5 @@
 var express = require('express');
 var app = express();
-var fs = require("fs");
 var Client = require('mariasql');
 var c = new Client({
   host: '127.0.0.1',
@@ -8,6 +7,13 @@ var c = new Client({
   password: '1prinya;',
   db: 'hct_database'
 });
+
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
+
 
 // Add headers
 app.use(function (req, res, next) {
@@ -30,7 +36,12 @@ app.use(function (req, res, next) {
 });
 
 app.get('/listExamHistory', function (req, res) {
-  c.query('SELECT * FROM exam_history ',
+  var courseType = req.query['courseType'];
+  var extendedQueryStr = '';
+  if (courseType == '1') extendedQueryStr = ' WHERE course_type = "1"';
+  if (courseType == '2') extendedQueryStr = ' WHERE course_type = "2"';
+
+  c.query('SELECT * FROM exam_history' + extendedQueryStr,
           function(err, rows) {
     if (err)
       throw err;
@@ -63,10 +74,9 @@ app.get('/listExamHistory', function (req, res) {
       }
     }
     str = '[' + str + ']';
-    console.dir(str);
     res.end(str);
   });
-c.end();
+  c.end();
 })
 
 app.get('/addExamHistory', function (req, res) {

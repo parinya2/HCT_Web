@@ -7,12 +7,13 @@
     <div class="dropdown" style="float:left;">
       <button class="btn btn-default dropdown-toggle" style="width:220px;" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <span id="examCourseDropdownText">หลักสูตรทั้งหมด</span>
+        <span class="th-td-hidden" id="examCourseDropdownIndex">0</span>
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรทั้งหมด')">หลักสูตรทั้งหมด</a></li>
-        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถยนต์')">หลักสูตรสอนขับรถยนต์</a></li>
-        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถจักรยานยนต์')">หลักสูตรสอนขับรถจักรยานยนต์</a></li>
+        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรทั้งหมด','0')">หลักสูตรทั้งหมด</a></li>
+        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถยนต์','1')">หลักสูตรสอนขับรถยนต์</a></li>
+        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถจักรยานยนต์','2')">หลักสูตรสอนขับรถจักรยานยนต์</a></li>
       </ul>
     </div>
     <div style="text-align:right; padding: 7px; float:left; width:50px;"> From </div>

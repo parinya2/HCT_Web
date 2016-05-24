@@ -2,15 +2,28 @@
 angular.module('hctApp', ['ngRoute'])
   .controller('HomeController', function($scope, $http) {
 
-    $scope.chooseExamCourseDropDown = function(index) {
-      jQuery('#examCourseDropdownText').text(index);
+    $scope.chooseExamCourseDropDown = function(text, index) {
+      jQuery('#examCourseDropdownText').text(text);
+      jQuery('#examCourseDropdownIndex').text(index);
     }
 
     $scope.loadExamHistoryData = function(examCourse, startDateTime, endDateTime) {
-
+      var examCourse = jQuery('#examCourseDropdownIndex').text();
       waitingDialog.show('กรุณารอสักครู่ ...');
+
+    /*  var data = jQuery.param({
+          'examCourseType': examCourse,
+          'shit': 102
+      });
+
+      var config = {
+          headers : {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+          }
+      }*/
+
       setTimeout(function(){
-          $http.get(globalNodeServicesPrefix + "/listExamHistory")
+          $http.get(globalNodeServicesPrefix + "/listExamHistory", {params:{courseType:examCourse, "p2":"FARM"}})
             .success(function(historyResponse) {
               $scope.allData = historyResponse;
               waitingDialog.hide();
