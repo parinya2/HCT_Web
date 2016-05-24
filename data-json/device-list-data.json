@@ -1,0 +1,52 @@
+[
+  {
+    "DeviceID":"1111111111",
+    "LicensePlate":"พย-5546",
+    "Driver":"สมปอง สอเหลบ"
+  },
+  {
+    "DeviceID":"2222222222",
+    "LicensePlate":"กฟ-7856",
+    "Driver":"วุฒิชัย ทาทอง"
+  },
+  {
+    "DeviceID":"3333333333",
+    "LicensePlate":"พน-7562",
+    "Driver":"สมปอง สอเหลบ"
+  },
+  {
+    "DeviceID":"4444444444",
+    "LicensePlate":"ยร-6659",
+    "Driver":"อาคม เอ่งฉ้วน"
+  },
+  {
+    "DeviceID":"5555555555",
+    "LicensePlate":"ยส-1223",
+    "Driver":"นพดล ปัทมะ"
+  },
+  {
+    "DeviceID":"6666666666",
+    "LicensePlate":"สว-4523",
+    "Driver":"สะมะแอ เจ๊ะเลาะห์"
+  },
+  {
+    "DeviceID":"6666666666",
+    "LicensePlate":"สว-4523",
+    "Driver":"สะมะแอ เจ๊ะเลาะห์"
+  },
+  {
+    "DeviceID":"6666666666",
+    "LicensePlate":"สว-4523",
+    "Driver":"สะมะแอ เจ๊ะเลาะห์"
+  },
+  {
+    "DeviceID":"6666666666",
+    "LicensePlate":"สว-4523",
+    "Driver":"สะมะแอ เจ๊ะเลาะห์"
+  },
+  {
+    "DeviceID":"6666666666",
+    "LicensePlate":"สว-4523",
+    "Driver":"สะมะแอ เจ๊ะเลาะห์"
+  }
+]

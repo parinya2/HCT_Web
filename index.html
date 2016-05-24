@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" >
+<head>
+  <title> Chappters GPS Tracker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/sticky-footer.css">
+  <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
+  <link rel="stylesheet" href="css/bootstrap-daterangepicker.css">
+  <!--<link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" /> -->
+
+
+  <style>
+    .table-center-header th {
+      text-align: center;
+    }
+    .td-align-center {
+      text-align: center;
+    }
+    .td-align-left {
+      text-align: left;
+    }
+    .th-td-hidden {
+      display: none;
+    }
+    .navbar-default {
+
+    }
+    .navbar-default .navbar-brand {
+
+    }
+  </style>
+
+
+</head>
+<body ng-app="hctApp">
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Chappters GPS</a>
+    </div>
+    <div ng-controller="NavBarController">
+      <ul class="nav navbar-nav">
+        <li id="menu0" onclick="selectMenu(0)"><a href="#/home">หน้าหลัก</a></li>
+        <li id="menu1" onclick="selectMenu(1)"><a href="#/history">ดูย้อนหลัง</a></li>
+        <li id="menu2" onclick="selectMenu(2)"><a href="#/speed">ควบคุมความเร็ว</a></li>
+        <li id="menu3" onclick="selectMenu(3)"><a href="#/boundary">ควบคุมเส้นทาง</a></li>
+        <li id="menu4" onclick="selectMenu(4)"><a href="#/setting">ตั้งค่า</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a ng-click="logout()" href=""><span class="glyphicon glyphicon-log-out"></span> ออกจากระบบ</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="ng-view" style="clear:both;">
+
+</div>
+
+
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted">Copyrights Hadyai Car Trainer 2016</p>
+  </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="app.js"></script>
+<script src="js/chartjs/chart.js"></script>
+<script src="js/chartjs/chart.min.js"></script>
+<script src="js/momentjs/moment-with-locales.js"></script>
+<script src="js/waitingjs/bootstrap-waitingfor.js"></script>
+<!-- Date Time Picker Source: http://eonasdan.github.io/bootstrap-datetimepicker/ -->
+<script src="js/datetimepickerjs/bootstrap-datetimepicker.js"></script>
+<script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?language=th"></script>
+<script>
+  var jQuery = $.noConflict();
+  var globalDeviceList = [];
+  var globalMergedDataList = [];
+  var globalGeocoder = new google.maps.Geocoder;
+  var homeGoogleMap;
+  var homeGoogleMapMarkers = [];
+  var googleMapInfoWindow = new google.maps.InfoWindow({});
+  var globalURLPrefix = 'http://localhost/HCTWeb';
+  var globalNodeServicesPrefix = 'http://localhost:8081';
+  var globalHistoryFuelChart;
+
+  function selectMenu(menuIndex) {
+    var targetMenuID = '#menu' + menuIndex;
+    var classActive = 'active';
+    jQuery("#menu0").removeClass(classActive);
+    jQuery("#menu1").removeClass(classActive);
+    jQuery("#menu2").removeClass(classActive);
+    jQuery("#menu3").removeClass(classActive);
+    jQuery("#menu4").removeClass(classActive);
+    jQuery(targetMenuID).addClass(classActive);
+  }
+
+  getCookie = function(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+  }
+
+  var token = null;
+  if (!getCookie('user')) {
+    window.location.href = './login.html';
+  } else {
+
+  }
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<div class="container">
+ 
+  <div class="container">
+  	<div style="float:left; width:150px; vertical-align:middle">
+      <div style="text-align:center; padding: 7px"> Choose Vehicle </div>
+  	</div>
+    <div class="dropdown" style="float:left;">
+      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <span id="historyVehicleDropdownText">Vehicle</span>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li ng-repeat="d in deviceList"><a href="" ng-click="chooseVehicleDropDown(d.LicensePlate)">{{d.LicensePlate}}</a></li>
+      </ul>
+    </div>
+    <div style="text-align:right; padding: 7px; float:left; width:50px;"> From </div>
+    <div class='col-md-3' style="float:left;">
+        <div class="form-group">
+            <div class='input-group date' id="historyStartDateTimePicker">
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div style="text-align:right; padding:7px; float:left; width:30px;"> To </div>
+    <div class='col-md-3' style="float:left;">
+        <div class="form-group">
+            <div class='input-group date' id="historyEndDateTimePicker">
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>  
+    <div  class="btn-group pull-right" role="group">
+      <button type="button" class="btn btn-success" ng-click="loadHistoryData(0,0,0)">Apply</button>
+    </div>  
+  </div>
+
+  <div class="container" style="display:none">
+    <input type="text" name="historyDateRange" style="width:300px" value="01/01/2015 1:30 PM - 01/01/2015 2:00 PM" />
+  </div>
+
+  <div style="width:100%; clear:both;">
+    <div>
+      <canvas id="historyFuelCanvas" height="250" width="800"></canvas>
+    </div>
+  </div>
+
+  <div class="container"  style="width:45%; float:left; height:400px; overflow-y:auto;" >
+    <table class="table table-responsive table-hover table-center-header">
+      <thead>
+        <tr>
+          <th>ลำดับ</th>        
+          <th>วัน-เวลา</th>
+          <th>ความเร็ว</th>
+          <th>สถานะ</th>
+          <th class="th-td-hidden">Lat</th>
+          <th class="th-td-hidden">Lon</th>
+        <tr>
+      <thead>
+      <tbody>
+        <tr ng-repeat="data in allData">
+          <td class="td-align-center" ng-click="relocateHistoryGoogleMap(data.Lat, data.Lon)">{{$index + 1}}</td>
+          <td class="td-align-center" ng-click="relocateHistoryGoogleMap(data.Lat, data.Lon)">{{data.DateTime}}</td>          
+          <td class="td-align-center" ng-click="relocateHistoryGoogleMap(data.Lat, data.Lon)">{{data.Speed}}</td>
+          <td class="td-align-center" ng-click="relocateHistoryGoogleMap(data.Lat, data.Lon)">{{data.Status}}</td>
+          <td class="th-td-hidden">{{data.Lat}}</td>
+          <td class="th-td-hidden">{{data.Lon}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="container" id="historyGoogleMap" style="width:50%; height: 400px;">
+
+  </div>
+
+  <div class="modal fade" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>กรุณารอสักครู่...</h3>
+        </div>
+        <div class="modal-body">
+          <div class="progress progress-striped active">
+            <div class="bar" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>

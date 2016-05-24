@@ -1,0 +1,89 @@
+<div class="container"  style="width:100%; float:left;" >
+
+  <div class="container">
+  	<div style="float:left; width:100px; vertical-align:middle">
+      <div style="text-align:center; padding: 7px"> ชนิดหลักสูตร </div>
+  	</div>
+    <div class="dropdown" style="float:left;">
+      <button class="btn btn-default dropdown-toggle" style="width:220px;" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <span id="examCourseDropdownText">หลักสูตรทั้งหมด</span>
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรทั้งหมด')">หลักสูตรทั้งหมด</a></li>
+        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถยนต์')">หลักสูตรสอนขับรถยนต์</a></li>
+        <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถจักรยานยนต์')">หลักสูตรสอนขับรถจักรยานยนต์</a></li>
+      </ul>
+    </div>
+    <div style="text-align:right; padding: 7px; float:left; width:50px;"> From </div>
+    <div class='col-md-3' style="float:left;">
+        <div class="form-group">
+            <div class='input-group date' id="historyStartDateTimePicker">
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div style="text-align:right; padding:7px; float:left; width:30px;"> To </div>
+    <div class='col-md-3' style="float:left;">
+        <div class="form-group">
+            <div class='input-group date' id="historyEndDateTimePicker">
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div  class="btn-group pull-right" role="group">
+      <button type="button" class="btn btn-success" ng-click="loadExamHistoryData(0,0,0)">ค้นหา</button>
+    </div>
+  </div>
+
+
+
+  <table class="table table-responsive table-hover table-center-header">
+    <thead>
+      <tr>
+        <th>ลำดับ</th>
+        <th>ชื่อ-นามสกุล</th>
+        <th>เลขประจำตัวประชาชน</th>
+        <th>หลักสูตรที่เรียน</th>
+        <th>ผลการสอบ</th>
+        <th>วันที่สอบ</th>
+        <th>หมายเลขข้อสอบ</th>
+        <th>เวลาที่ใช้ (นาที)</th>
+      <tr>
+    <thead>
+    <tbody>
+      <tr ng-repeat="data in allData">
+        <td class="td-align-center">{{$index + 1}}</td>
+        <td class="td-align-center">{{data.Fullname}}</td>
+        <td class="td-align-center">{{data.CitizenID}}</td>
+        <td class="td-align-center">{{data.CourseName}}</td>
+        <td class="td-align-center">{{data.ExamResult}}</td>
+        <td class="td-align-center">{{data.ExamDatetime}}</td>
+        <td class="td-align-center">{{data.ExamNumber}}</td>
+        <td class="td-align-center">{{data.ExamTime}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="vehicleDetailModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="vehicleDetailTitle" class="modal-title">Vehicle Detail</h4>
+      </div>
+      <div class="modal-body">
+        <p>Hello</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
