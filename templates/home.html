@@ -16,22 +16,22 @@
         <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถจักรยานยนต์','2')">หลักสูตรสอนขับรถจักรยานยนต์</a></li>
       </ul>
     </div>
-    <div style="text-align:right; padding: 7px; float:left; width:50px;"> From </div>
-    <div class='col-md-3' style="float:left;">
+    <div style="text-align:right; padding: 7px; float:left; width:120px;"> วันที่สอบตั้งแต่ </div>
+    <div style="width:180px;" class='col-md-3' style="float:left;">
         <div class="form-group">
-            <div class='input-group date' id="historyStartDateTimePicker">
-                <input type='text' class="form-control" />
+            <div class='input-group date' id="homeStartDateTimePicker">
+                <input id='homeStartDateText' type='text' class="form-control" />
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
             </div>
         </div>
     </div>
-    <div style="text-align:right; padding:7px; float:left; width:30px;"> To </div>
-    <div class='col-md-3' style="float:left;">
+    <div style="text-align:right; padding:7px; float:left; width:30px;"> ถึง </div>
+    <div style="width:180px;" class='col-md-3' style="float:left;">
         <div class="form-group">
-            <div class='input-group date' id="historyEndDateTimePicker">
-                <input type='text' class="form-control" />
+            <div class='input-group date' id="homeEndDateTimePicker">
+                <input id='homeEndDateText' type='text' class="form-control" />
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -39,10 +39,9 @@
         </div>
     </div>
     <div  class="btn-group pull-right" role="group">
-      <button type="button" class="btn btn-success" ng-click="loadExamHistoryData(0,0,0)">ค้นหา</button>
+      <button type="button" class="btn btn-success" ng-click="loadExamHistoryData()">ค้นหา</button>
     </div>
   </div>
-
 
 
   <table class="table table-responsive table-hover table-center-header">

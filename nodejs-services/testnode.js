@@ -43,12 +43,34 @@ var server = app.listen(8081, function () {
 });
 
 app.get('/listExamHistory', function (req, res) {
-  var courseType = req.query['courseType'];
-  var extendedQueryStr = '';
-  if (courseType == '1') extendedQueryStr = ' WHERE course_type = "1"';
-  if (courseType == '2') extendedQueryStr = ' WHERE course_type = "2"';
+  var courseType = req.query['courseType_param'];
+  var startDate = req.query['startDate_param'];
+  var endDate = req.query['endDate_param'];
+console.log('a='+startDate+'b='+endDate);
+  var extendedQueryStr = ' WHERE 1=1 ';
+  if (courseType == '1') extendedQueryStr = ' WHERE course_type = "1" ';
+  if (courseType == '2') extendedQueryStr = ' WHERE course_type = "2" ';
 
-  mariadbClient.query('SELECT * FROM exam_history' + extendedQueryStr,
+  var newStartDateStr = '1970-01-01 00:00:01';
+  var newEndDateStr = '9999-01-01 23:59:59';
+
+  if (startDate.indexOf('/') > -1) {
+    var tmpArr = startDate.split('/');
+    if (tmpArr.length == 3) {
+      newStartDateStr = tmpArr[2]+'-'+tmpArr[1]+'-'+tmpArr[0]+" 00:00:01";
+    }
+  }
+
+  if (endDate.indexOf('/') > -1) {
+    var tmpArr = endDate.split('/');
+    if (tmpArr.length == 3) {
+      newEndDateStr = tmpArr[2]+'-'+tmpArr[1]+'-'+tmpArr[0]+" 23:59:59";
+    }
+  }
+
+  mariadbClient.query('SELECT * FROM exam_history' + extendedQueryStr +
+                      ' AND exam_datetime >= :param1 AND exam_datetime <= :param2',
+                      {param1:newStartDateStr, param2:newEndDateStr},
           function(err, rows) {
     if (err)
       throw err;
@@ -66,12 +88,25 @@ app.get('/listExamHistory', function (req, res) {
       else
         examResult = 'สอบไม่ผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
 
+      var exam_datetime = '';
+      var rawExamDatetime = '' + rows[i].exam_datetime;
+      if (rawExamDatetime.length > 0) {
+        var tmpArr1 = rawExamDatetime.split(' ');
+        if (tmpArr1.length == 2) {
+          var timeStr = tmpArr1[1];
+          var dateStr = tmpArr1[0];
+          var tmpArr2 = dateStr.split('-');
+          dateStr = tmpArr2[2] + '/' + tmpArr2[1] + '/' + tmpArr2[0];
+          exam_datetime = dateStr + ' เวลา ' + timeStr + ' น.';
+        }
+      }
+
       var tmp = '{' +
                 '"Fullname":' + '"' + rows[i].fullname + '",' +
                 '"CitizenID":' + '"' + rows[i].citizen_id + '",' +
                 '"CourseName":' + '"' + courseName + '",' +
                 '"ExamResult":' + '"' + examResult + '",' +
-                '"ExamDatetime":' + '"' + rows[i].exam_datetime + '",' +
+                '"ExamDatetime":' + '"' + exam_datetime + '",' +
                 '"ExamNumber":' + '"' + rows[i].exam_number + '",' +
                 '"ExamTime":' + '"' + rows[i].exam_time + '"' +
                 '}';
@@ -90,7 +125,7 @@ app.get('/addExamHistory', function (req, res) {
   mariadbClient.query('INSERT INTO exam_history ' +
           '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime)' +
           ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7)',
-          {param1: 'สมศักดิ์ ค้าแก้ว', param2: '123456789', param3: '34', param4: 45, param5:47, param6:1, param7: '2016-05-23 08:30:01'},
+          {param1: 'สมศักดิ์ ค้าแก้ว', param2: '123456789', param3: '34', param4: 45, param5:47, param6:1, param7: '2016-05-23T08:30:01'},
           function(err, rows) {
     if (err)
       throw err;
@@ -147,7 +182,7 @@ app.post('/createUser', function (req, res) {
       if (err)
         throw err;
 
-        res.end('SUCCESS');
+      res.end('SUCCESS');
     });
     mariadbClient.end();
   });

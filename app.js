@@ -7,12 +7,16 @@ angular.module('hctApp', ['ngRoute'])
       jQuery('#examCourseDropdownIndex').text(index);
     }
 
-    $scope.loadExamHistoryData = function(examCourse, startDateTime, endDateTime) {
+    $scope.loadExamHistoryData = function() {
       var examCourse = jQuery('#examCourseDropdownIndex').text();
+      var startDate = jQuery('#homeStartDateText').val();
+      var endDate = jQuery('#homeEndDateText').val();
+
       waitingDialog.show('กรุณารอสักครู่ ...');
 
       setTimeout(function(){
-          $http.get(globalNodeServicesPrefix + "/listExamHistory", {params:{courseType:examCourse, "p2":"FARM"}})
+          $http.get(globalNodeServicesPrefix + "/listExamHistory",
+                   {params:{courseType_param:examCourse, startDate_param:startDate, endDate_param:endDate}})
             .success(function(historyResponse) {
               $scope.allData = historyResponse;
               waitingDialog.hide();
@@ -138,6 +142,25 @@ angular.module('hctApp', ['ngRoute'])
     }
 
     selectMenu(0);
+
+    jQuery(function () {
+      jQuery('#homeStartDateTimePicker').datetimepicker({
+        locale: 'th',
+        format: 'DD/MM/YYYY'
+      });
+      jQuery('#homeEndDateTimePicker').datetimepicker({
+        locale: 'th',
+        useCurrent: false,
+        format: 'DD/MM/YYYY'
+      });
+
+      jQuery("#homeStartDateTimePicker").on("dp.change",function (e) {
+          jQuery('#homeEndDateTimePicker').data("DateTimePicker").minDate(e.date);
+      });
+      jQuery("#homeEndDateTimePicker").on("dp.change",function (e) {
+          jQuery('#homeStartDateTimePicker').data("DateTimePicker").maxDate(e.date);
+      });
+    });
 
     if (globalDeviceList.length == 0) {
       $http.get(globalURLPrefix + "/data-json/device-list-data.json")
@@ -301,12 +324,11 @@ angular.module('hctApp', ['ngRoute'])
     }
 
     jQuery(function () {
-
       jQuery('#historyStartDateTimePicker').datetimepicker({
-        //locale: 'th'
+        locale: 'th'
       });
       jQuery('#historyEndDateTimePicker').datetimepicker({
-        //locale: 'th',
+        locale: 'th',
         useCurrent: false
       });
 
@@ -318,16 +340,16 @@ angular.module('hctApp', ['ngRoute'])
       });
 
       jQuery('input[name="historyDateRange"]').daterangepicker({
-        timePicker: true,
-        timePicker24Hour: true,
-        timePickerIncrement: 15,
-        locale: {
-            format: 'DD/MM/YYYY   (hh:mm A)'
-        },
-        dateLimit: {
-          days: 3
-        }
-    });
+          timePicker: true,
+          timePicker24Hour: true,
+          timePickerIncrement: 15,
+          locale: {
+              format: 'DD/MM/YYYY   (hh:mm A)'
+          },
+          dateLimit: {
+            days: 3
+          }
+      });
     });
 
     drawFuelGraph(false, []);
