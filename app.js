@@ -11,17 +11,6 @@ angular.module('hctApp', ['ngRoute'])
       var examCourse = jQuery('#examCourseDropdownIndex').text();
       waitingDialog.show('กรุณารอสักครู่ ...');
 
-    /*  var data = jQuery.param({
-          'examCourseType': examCourse,
-          'shit': 102
-      });
-
-      var config = {
-          headers : {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
-          }
-      }*/
-
       setTimeout(function(){
           $http.get(globalNodeServicesPrefix + "/listExamHistory", {params:{courseType:examCourse, "p2":"FARM"}})
             .success(function(historyResponse) {

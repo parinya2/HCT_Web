@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Chappters GPS Tracker</title>
+    <title>Hadyai Car Trainer</title>
     <meta http-equiv="pragma" content="no-cache" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -9,33 +9,32 @@
     <link rel="stylesheet" href="css/login-form.css">
   </head>
 
-  <body ng-app="gpsApp" ng-controller="LoginController">
+  <body ng-app="hctApp" ng-controller="LoginController">
     <div class="container">
       <form class="form-signin">
-        <h2>Log in</h1>
+        <h2><img src="/HCT_Web/images/dlt_logo.png" alt="" width="150" height="150"></h2>
         <div class="register-wrap">
           <input type="text" class="form-control" id="username-field" placeholder="Username" name="username" ng-model="username">
-        
           <input type="password" class="form-control" id="password-field" placeholder="Password" name="password" ng-model="password">
-       
+
 
           <div class="group-login">
             <div class="pull-left">
               <input type="checkbox" class="list-child" ng-model="rememberUser" id="remember-checkbox">
-              <span class="text-remember">Remember Me</span>
+              <span class="text-remember">จดจำฉัน</span>
             </div>
             <div class="pull-right">
-              <span class="text-forget-pass" ng-click="resetPassword()" id="forget-pass-btn">Forget Password?</span>
+              <span class="text-forget-pass" ng-click="resetPassword()" id="forget-pass-btn">ลืมรหัสผ่าน ?</span>
             </div>
           </div>
 
           <button class="btn btn-info btn-lg btn-block btn-register" id="init-bt" ng-click="login(username, password)">
-            <span>Log in</span>
+            <span>เข้าสู่ระบบ</span>
           </button>
 
 
         </div>
-      </form>       
+      </form>
     </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -44,15 +43,23 @@
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
   <script>
-    angular.module('gpsApp', ['ngRoute'])
-      .controller('LoginController', function($scope) {
+    angular.module('hctApp', ['ngRoute'])
+      .controller('LoginController', function($scope, $http) {
         $scope.login = function(username, password) {
-          if (username == 'admin' && password == 'password') {
-            document.cookie = 'user=' + username +'; expires=Thu, 18 Dec 2019 12:00:00 UTC;';
-            window.location.href = './index.html';
-          } else {
-            alert("Wrong username or password");
-          }
+
+          $http.post('http://localhost:8081' + "/login", {username_param:username, password_param: password})
+            .success(function(data, status, headers, config) {
+              if (data == 'SUCCESS') {
+                //document.cookie = 'user=' + username +'; expires=Thu, 18 Dec 2019 12:00:00 UTC;';
+                document.cookie = 'user=' + username +';';
+                window.location.href = './index.html';
+              } else if (data == 'FAIL') {
+                alert("ชื่อผู้ใช้หรือรหัสผ่านผิด กรุณาลองอีกครั้ง");
+              }
+            })
+            .error(function (data, status, header, config) {
+
+            });
         };
       })
   </script>

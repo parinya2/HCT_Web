@@ -1,5 +1,8 @@
+var bodyParser = require('body-parser')
 var express = require('express');
 var app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 var Client = require('mariasql');
 var c = new Client({
   host: '127.0.0.1',
@@ -7,13 +10,6 @@ var c = new Client({
   password: '1prinya;',
   db: 'hct_database'
 });
-
-var bodyParser = require('body-parser')
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
-
 
 // Add headers
 app.use(function (req, res, next) {
@@ -34,6 +30,15 @@ app.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+
+var server = app.listen(8081, function () {
+
+  var host = server.address().address
+  var port = server.address().port
+
+  console.log("Example app listening at http://%s:%s", host, port)
+
+})
 
 app.get('/listExamHistory', function (req, res) {
   var courseType = req.query['courseType'];
@@ -96,11 +101,27 @@ app.get('/addExamHistory', function (req, res) {
 c.end();
 })
 
-var server = app.listen(8081, function () {
+app.post('/login', function (req, res) {
+  var username = req.body.username_param;
+  var password = req.body.password_param;
 
-  var host = server.address().address
-  var port = server.address().port
+  console.dir('User='+username+'  Pass='+password);
 
-  console.log("Example app listening at http://%s:%s", host, port)
+  c.query('SELECT * FROM all_users ' +
+          ' WHERE username = :param1',
+          {param1: username},
+          function(err, rows) {
+    if (err)
+      throw err;
 
+    if (rows.length > 0) {
+      res.end('SUCCESS');
+    } else {
+      res.end('FAIL');
+    }
+
+    var str = '';
+    //res.end(str);
+  });
+  c.end();
 })
