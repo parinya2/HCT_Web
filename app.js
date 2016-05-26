@@ -25,122 +25,6 @@ angular.module('hctApp', ['ngRoute'])
 
     }
 
-    $scope.showVehicleDetail = function(data) {
-      var latlng = {lat: parseFloat(data.Lat), lng: parseFloat(data.Lon)};
-      globalGeocoder.geocode({'location': latlng}, function(results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-          if (results[0]) {
-            jQuery('#vehicleDetailTitle').text(results[0].formatted_address);
-          } else {
-            window.alert('No results found');
-          }
-        } else {
-          window.alert('Geocoder failed due to: ' + status);
-        }
-      });
-      jQuery('#vehicleDetailModal').modal('show');
-      homeGoogleMap.setZoom(16);
-      homeGoogleMap.setCenter(latlng);
-    };
-
-    $scope.relocateHomeGoogleMap = function(lat, lon) {
-      homeGoogleMap.setZoom(16);
-      homeGoogleMap.setCenter(new google.maps.LatLng(parseFloat(lat), parseFloat(lon)));
-    };
-
-    function drawMarkerOnHomeGoogleMap(mergedDataList) {
-      homeGoogleMap = new google.maps.Map(document.getElementById('homeGoogleMap'));
-      for (var i = 0; i < mergedDataList.length; i++) {
-        var lat = mergedDataList[i].Lat;
-        var lon = mergedDataList[i].Lon;
-        var deviceID = mergedDataList[i].DeviceID;
-        var center = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
-        homeGoogleMap.setCenter(center)
-
-        var marker = new google.maps.Marker({
-          position: center,
-          map: homeGoogleMap,
-          title: deviceID
-        });
-
-        google.maps.event.addListener(marker, 'click', function () {
-          var targetData;
-
-          for (var i = 0; i < globalMergedDataList.length; i++) {
-            var tmpData = globalMergedDataList[i];
-            if (tmpData.DeviceID == this.title) {
-              targetData = tmpData;
-              break;
-            }
-          }
-          renderMarkerDescription(globalGeocoder, homeGoogleMap, googleMapInfoWindow, this, targetData);
-        });
-      }
-
-      homeGoogleMap.setZoom(12);
-      homeGoogleMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-    }
-
-    function renderMarkerDescription(geocoder, map, infoWindow, marker, targetData) {
-      var latlng = {lat: parseFloat(targetData.Lat), lng: parseFloat(targetData.Lon)};
-      geocoder.geocode({'location': latlng}, function(results, status) {
-        var markerAddress = ' - ';
-        if (status === google.maps.GeocoderStatus.OK) {
-          if (results[0]) {
-            var markerAddress = results[0].formatted_address
-          }
-        }
-        var markerDesc = '<div style="width: 250px">' +
-                         '<table>' +
-                         '<tr><td style="width: 80px"> ทะเบียน : </td> <td>' + targetData.LicensePlate + '</td></tr>' +
-                         '<tr><td style="width: 80px"> ที่อยู่ : </td> <td>' + markerAddress + '</td></tr>' +
-                         '<tr><td style="width: 80px"> คนขับ : </td> <td>' + targetData.Driver + '</td></tr>' +
-                         '</table>' +
-                         '</div>';
-        infoWindow.setContent(markerDesc);
-        infoWindow.open(map, marker);
-      });
-    }
-
-    function mergeJSONByDeviceID(deviceList, gpsList) {
-      var result = [];
-      var keyDeviceID = 'DeviceID';
-      var keySpeed = 'Speed';
-      var keyAddress = 'Address';
-      var keyStatus = 'Status';
-      var keyLat = 'Lat';
-      var keyLon = 'Lon';
-      var keyLicensePLate = 'LicensePlate';
-      var keyDriver = 'Driver';
-
-      for (var i = 0; i < deviceList.length; i++) {
-        var deviceObj = deviceList[i];
-        var deviceID = deviceObj[keyDeviceID];
-
-        for (var k = 0; k < gpsList.length; k++) {
-          var gpsObj = gpsList[k];
-          var gpsDeviceID = gpsObj[keyDeviceID];
-
-          if (deviceID == gpsDeviceID) {
-            var newObj = {};
-            newObj[keyDeviceID] = gpsObj[keyDeviceID];
-            newObj[keySpeed] = gpsObj[keySpeed];
-            newObj[keyAddress] = gpsObj[keyAddress];
-            newObj[keyStatus] = gpsObj[keyStatus];
-            newObj[keyLat] = gpsObj[keyLat];
-            newObj[keyLon] = gpsObj[keyLon];
-            newObj[keyLicensePLate] = deviceObj[keyLicensePLate];
-            newObj[keyDriver] = deviceObj[keyDriver];
-
-            result.push(newObj);
-            break;
-          }
-        }
-      }
-
-      return result;
-    }
-
     selectMenu(0);
 
     jQuery(function () {
@@ -161,30 +45,6 @@ angular.module('hctApp', ['ngRoute'])
           jQuery('#homeStartDateTimePicker').data("DateTimePicker").maxDate(e.date);
       });
     });
-
-    if (globalDeviceList.length == 0) {
-      $http.get(globalURLPrefix + "/data-json/device-list-data.json")
-        .success(function(deviceResponse) {
-        globalDeviceList = deviceResponse;
-
-        $http.get("http://127.0.0.1:8080/chappters-gps/data-json/gps-data.json")
-          .success(function(gpsResponse) {
-            var mergedData = mergeJSONByDeviceID(globalDeviceList, gpsResponse);
-            globalMergedDataList = mergedData;
-        //  $scope.allData = mergedData;
-            drawMarkerOnHomeGoogleMap(mergedData);
-          })
-      })
-    } else {
-      $http.get(globalURLPrefix + "/data-json/gps-data.json")
-        .success(function(gpsResponse) {
-          var mergedData = mergeJSONByDeviceID(globalDeviceList, gpsResponse);
-          globalMergedDataList = mergedData;
-        //  $scope.allData = mergedData;
-          drawMarkerOnHomeGoogleMap(mergedData);
-        })
-    }
-
   })
   .controller('HistoryController', function($scope, $http) {
 
@@ -311,7 +171,7 @@ angular.module('hctApp', ['ngRoute'])
 
     }
 
-    selectMenu(1);
+    selectMenu(99);
 
     if (globalDeviceList.length == 0) {
       $http.get(globalURLPrefix + "/data-json/device-list-data.json")
@@ -355,17 +215,13 @@ angular.module('hctApp', ['ngRoute'])
     drawFuelGraph(false, []);
     $scope.initHistoryGoogleMap();
   })
-  .controller('SpeedController', function($scope) {
-    $scope.message = 'This is SpeedController';
-    selectMenu(2);
-  })
-  .controller('BoundaryController', function($scope) {
-    $scope.message = 'This is BoundaryController';
-    selectMenu(3);
+  .controller('ReportController', function($scope) {
+    $scope.message = 'This is ReportController';
+    selectMenu(1);
   })
   .controller('SettingController', function($scope) {
     $scope.message = 'This is SettingController';
-    selectMenu(4);
+    selectMenu(2);
   })
   .controller('NavBarController', function($scope) {
     $scope.logout = function() {
@@ -383,13 +239,9 @@ angular.module('hctApp', ['ngRoute'])
           templateUrl: 'templates/history.html',
           controller: 'HistoryController'
         }).
-        when('/speed', {
-          templateUrl: 'templates/speed.html',
-          controller: 'SpeedController'
-        }).
-        when('/boundary', {
-          templateUrl: 'templates/boundary.html',
-          controller: 'BoundaryController'
+        when('/report', {
+          templateUrl: 'templates/report.html',
+          controller: 'ReportController'
         }).
         when('/setting', {
           templateUrl: 'templates/setting.html',
