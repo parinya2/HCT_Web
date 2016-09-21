@@ -7,7 +7,7 @@ var MariaClient = require('mariasql');
 var mariadbClient = new MariaClient({
   host: '127.0.0.1',
   user: 'root',
-  password: '1prinya;',
+  password: '&SOMEWHEREONLYWEKNOWthisisabookPEACEFUL$71339416@',
   db: 'hct_database'
 });
 
@@ -81,9 +81,8 @@ console.log('a='+startDate+'b='+endDate);
       if (rows[i].course_type == '1') courseName = 'หลักสูตรสอบขับรถยนต์';
       if (rows[i].course_type == '2') courseName = 'หลักสูตรสอบขับรถจักรยานยนต์';
 
-      var SCORE_TO_PASS = 40;
       var examResult = '';
-      if (rows[i].exam_score >= SCORE_TO_PASS)
+      if (rows[i].exam_result == 'Y')
         examResult = 'สอบผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
       else
         examResult = 'สอบไม่ผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
@@ -121,11 +120,29 @@ console.log('a='+startDate+'b='+endDate);
   mariadbClient.end();
 });
 
-app.get('/addExamHistory', function (req, res) {
-  mariadbClient.query('INSERT INTO exam_history ' +
+app.post('/addExamHistory', function (req, res) {
+  var fullname = req.body.fullname;
+  var citizenId = req.body.citizenId;
+  var examNumber = req.body.examNumber;
+  var examTime = req.body.examTime;
+  var examScore = req.body.examScore;
+  var courseType = req.body.courseType;
+  var examDateTime = req.body.examDateTime;
+  var examResult = req.body.examResult;
+
+  /*
+    mariadbClient.query('INSERT INTO exam_history ' +
           '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime)' +
           ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7)',
           {param1: 'สมศักดิ์ ค้าแก้ว', param2: '123456789', param3: '34', param4: 45, param5:47, param6:1, param7: '2016-05-23T08:30:01'},
+          function(err, rows) {
+  */
+
+  mariadbClient.query('INSERT INTO exam_history ' +
+          '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime, exam_result)' +
+          ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8)',
+          {param1: fullname, param2: citizenId, param3: examNumber, param4: examTime, 
+           param5: examScore, param6: courseType, param7: examDateTime, param8: examResult},
           function(err, rows) {
     if (err)
       throw err;
