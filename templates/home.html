@@ -16,8 +16,8 @@
         <li><a href="" ng-click="chooseExamCourseDropDown('หลักสูตรสอนขับรถจักรยานยนต์','2')">หลักสูตรสอนขับรถจักรยานยนต์</a></li>
       </ul>
     </div>
-    <div style="text-align:right; padding: 7px; float:left; width:120px;"> วันที่สอบตั้งแต่ </div>
-    <div style="width:180px;" class='col-md-3' style="float:left;">
+    <div style="text-align:right; padding: 7px; float:left; width:110px;"> วันที่สอบตั้งแต่ </div>
+    <div style="width:170px;" class='col-md-3' style="float:left;">
         <div class="form-group">
             <div class='input-group date' id="homeStartDateTimePicker">
                 <input id='homeStartDateText' type='text' class="form-control" />
@@ -38,8 +38,12 @@
             </div>
         </div>
     </div>
-    <div  class="btn-group pull-right" role="group">
+    <div style="width:50px; float:left;">
       <button type="button" class="btn btn-success" ng-click="loadExamHistoryData()">ค้นหา</button>
+    </div>
+    <div style="text-align:right; padding:7px; float:left; width:20px;"></div>
+    <div style="width:50px; float:left;">
+      <button type="button" class="btn btn-primary" add-bom="true" csv-header="getExamHistoryHeaderForCsv()" ng-csv="getExamHistoryArrayForCsv()" filename="รายงานการสอบ.csv">พิมพ์รายงาน</button>
     </div>
   </div>
 

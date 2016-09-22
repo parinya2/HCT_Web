@@ -17,7 +17,7 @@ var bcrypt = require('bcrypt');
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost');
+    res.setHeader('Access-Control-Allow-Origin', 'http://128.199.95.79');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -78,8 +78,8 @@ console.log('a='+startDate+'b='+endDate);
     var str = '';
     for (var i = 0; i < rows.length; i++) {
       var courseName = '';
-      if (rows[i].course_type == '1') courseName = 'หลักสูตรสอบขับรถยนต์';
-      if (rows[i].course_type == '2') courseName = 'หลักสูตรสอบขับรถจักรยานยนต์';
+      if (rows[i].course_type == '1') courseName = 'หลักสูตรสอนขับรถยนต์';
+      if (rows[i].course_type == '2') courseName = 'หลักสูตรสอนขับรถจักรยานยนต์';
 
       var examResult = '';
       if (rows[i].exam_result == 'Y')
@@ -141,7 +141,7 @@ app.post('/addExamHistory', function (req, res) {
   mariadbClient.query('INSERT INTO exam_history ' +
           '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime, exam_result)' +
           ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8)',
-          {param1: fullname, param2: citizenId, param3: examNumber, param4: examTime, 
+          {param1: fullname, param2: citizenId, param3: examNumber, param4: examTime,
            param5: examScore, param6: courseType, param7: examDateTime, param8: examResult},
           function(err, rows) {
     if (err)

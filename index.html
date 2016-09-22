@@ -45,8 +45,8 @@
     <div ng-controller="NavBarController">
       <ul class="nav navbar-nav">
         <li id="menu0" onclick="selectMenu(0)"><a href="#/home">หน้าหลัก</a></li>
-        <li id="menu1" onclick="selectMenu(1)"><a href="#/report">ออกรายงาน</a></li>
-        <li id="menu4" onclick="selectMenu(2)"><a href="#/setting">ตั้งค่า</a></li>
+        <!--<li id="menu1" onclick="selectMenu(1)"><a href="#/report">ออกรายงาน</a></li>-->
+        <!--<li id="menu4" onclick="selectMenu(2)"><a href="#/setting">ตั้งค่า</a></li>-->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a ng-click="logout()" href=""><span class="glyphicon glyphicon-log-out"></span> ออกจากระบบ</a></li>
@@ -80,6 +80,12 @@
 <script src="js/datetimepickerjs/bootstrap-datetimepicker.js"></script>
 <script src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <script src="http://maps.googleapis.com/maps/api/js?language=th"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.min.js.map"></script>
+
 <script>
   var jQuery = $.noConflict();
   var globalDeviceList = [];
@@ -88,8 +94,8 @@
   var homeGoogleMap;
   var homeGoogleMapMarkers = [];
   var googleMapInfoWindow = new google.maps.InfoWindow({});
-  var globalURLPrefix = 'http://localhost/HCTWeb';
-  var globalNodeServicesPrefix = 'http://localhost:8081';
+  var globalURLPrefix = 'http://127.0.0.1/HCTWeb';
+  var globalNodeServicesPrefix = 'http://128.199.95.79:8081';
   var globalHistoryFuelChart;
 
   function selectMenu(menuIndex) {

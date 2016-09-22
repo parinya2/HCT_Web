@@ -1,6 +1,28 @@
 //Define an angular module for our app
-angular.module('hctApp', ['ngRoute'])
+angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   .controller('HomeController', function($scope, $http) {
+
+    $scope.getExamHistoryHeaderForCsv = function() {
+      return ['ลำดับที่','ชื่อ-นามสกุล','เลขประจำตัวประชาชน','หลักสูตรที่เรียน','ผลการสอบ','วันที่สอบ','หมายเลขข้อสอบ','เวลาที่ใช้ (นาที)'];
+    }
+
+    $scope.getExamHistoryArrayForCsv = function() {
+      var tmpArray = $scope.allData;
+      var resultArray = [];
+      for (var i = 0; i < tmpArray.length; i++)
+      {
+        var obj = tmpArray[i];
+        var s = [];
+        for (var key in obj)
+        {
+          var value = obj[key];
+          s.push(value);
+        }
+        var idx = i + 1;
+        resultArray.push({p1:idx, p2:s[0], p3:s[1], p4:s[2], p5:s[3], p6:s[4], p7:s[5], p8:s[6]});
+      }
+      return resultArray;
+    }
 
     $scope.chooseExamCourseDropDown = function(text, index) {
       jQuery('#examCourseDropdownText').text(text);
