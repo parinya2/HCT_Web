@@ -56,6 +56,31 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
                    {params:{courseType_param:examCourse, startDate_param:startDate, endDate_param:endDate}})
             .success(function(historyResponse) {
               $scope.allData = historyResponse;
+
+              var tmpArray = $scope.allData;
+              var passExamCount = 0;
+              var failExamCount = 0;
+              var notCompleteExamCount = 0;
+              for (var i = 0; i < tmpArray.length; i++)
+              {
+                var obj = tmpArray[i];
+                var s = [];
+                for (var key in obj)
+                {
+                  var value = obj[key];
+
+                  if (key == 'ExamResultFlag')
+                  {
+                    if (value == 'Y')       passExamCount++;
+                    else if (value == 'N')  failExamCount++;
+                    else if (value == 'X')  notCompleteExamCount++;
+                  }
+                }
+              }
+              jQuery('#passExamCountText').text(passExamCount);
+              jQuery('#failExamCountText').text(failExamCount);
+              jQuery('#notCompleteExamCountText').text(notCompleteExamCount);
+
               waitingDialog.hide();
             })
       }, 2000);
