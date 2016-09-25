@@ -36,10 +36,14 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
         resultArray.push({p1:idx, p2:s[0], p3:s[1], p4:s[2], p5:s[3], p6:s[4], p7:s[5], p8:s[6]});
       }
 
+      var startDateText = jQuery('#searchStartDateText').text();
+      var endDateText = jQuery('#searchEndDateText').text();
       resultArray.unshift({p1:''});
-      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบผ่าน', p3:passExamCount});
-      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบไม่ผ่าน', p3:failExamCount});
       resultArray.unshift({p1:'', p2:'จำนวนคนที่ทำข้อสอบไม่เสร็จ', p3:notCompleteExamCount});
+      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบไม่ผ่าน', p3:failExamCount});
+      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบผ่าน', p3:passExamCount});
+      resultArray.unshift({p1:'', p2:'ตั้งแต่วันที่', p3:startDateText, p4:'ถึงวันที่', p5:endDateText});
+      resultArray.unshift({p1:'', p2:'สรุปผลการทดสอบ'});
       resultArray.unshift({p1:''});
 
       return resultArray;
