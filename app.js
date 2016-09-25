@@ -8,7 +8,11 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 
     $scope.getExamHistoryArrayForCsv = function() {
       var tmpArray = $scope.allData;
+
       var resultArray = [];
+      resultArray.push({p1:'ลำดับที่', p2:'ชื่อ-นามสกุล', p3:'เลขประจำตัวประชาชน', p4:'หลักสูตรที่เรียน',
+                        p5:'ผลการสอบ', p6:'วันที่สอบ', p7:'หมายเลขข้อสอบ', p8:'เวลาที่ใช้ (นาที)'});
+
       var passExamCount = 0;
       var failExamCount = 0;
       var notCompleteExamCount = 0;
@@ -32,10 +36,12 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
         resultArray.push({p1:idx, p2:s[0], p3:s[1], p4:s[2], p5:s[3], p6:s[4], p7:s[5], p8:s[6]});
       }
 
-      resultArray.push({p1:''});
-      resultArray.push({p1:'', p2:'จำนวนคนที่สอบผ่าน', p3:passExamCount});
-      resultArray.push({p1:'', p2:'จำนวนคนที่สอบไม่ผ่าน', p3:failExamCount});
-      resultArray.push({p1:'', p2:'จำนวนคนที่ทำข้อสอบไม่เสร็จ', p3:notCompleteExamCount});
+      resultArray.unshift({p1:''});
+      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบผ่าน', p3:passExamCount});
+      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบไม่ผ่าน', p3:failExamCount});
+      resultArray.unshift({p1:'', p2:'จำนวนคนที่ทำข้อสอบไม่เสร็จ', p3:notCompleteExamCount});
+      resultArray.unshift({p1:''});
+
       return resultArray;
     }
 
