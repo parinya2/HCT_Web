@@ -84,8 +84,12 @@ console.log('a='+startDate+'b='+endDate);
       var examResult = '';
       if (rows[i].exam_result == 'Y')
         examResult = 'สอบผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
-      else
+      else if (rows[i].exam_result == 'N')
         examResult = 'สอบไม่ผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
+      else if (rows[i].exam_result == 'X')
+        examResult = 'ทำข้อสอบไม่เสร็จ';
+      else
+        examResult = '-';
 
       var exam_datetime = '';
       var rawExamDatetime = '' + rows[i].exam_datetime;
