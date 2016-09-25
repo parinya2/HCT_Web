@@ -87,6 +87,11 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
               jQuery('#failExamCountText').text(failExamCount);
               jQuery('#notCompleteExamCountText').text(notCompleteExamCount);
 
+              startDate = startDate.length > 0 ? startDate : '-';
+              endDate = endDate.length > 0 ? endDate : '-';
+              jQuery('#searchStartDateText').text(startDate);
+              jQuery('#searchEndDateText').text(endDate);
+
               waitingDialog.hide();
             })
       }, 2000);
