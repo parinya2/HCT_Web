@@ -81,6 +81,8 @@ console.log('a='+startDate+'b='+endDate);
       if (rows[i].course_type == '1') courseName = 'หลักสูตรสอนขับรถยนต์';
       if (rows[i].course_type == '2') courseName = 'หลักสูตรสอนขับรถจักรยานยนต์';
 
+      var examResultFlag = rows[i].exam_result ;
+
       var examResult = '';
       if (rows[i].exam_result == 'Y')
         examResult = 'สอบผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
@@ -111,7 +113,8 @@ console.log('a='+startDate+'b='+endDate);
                 '"ExamResult":' + '"' + examResult + '",' +
                 '"ExamDatetime":' + '"' + exam_datetime + '",' +
                 '"ExamNumber":' + '"' + rows[i].exam_number + '",' +
-                '"ExamTime":' + '"' + rows[i].exam_time + '"' +
+                '"ExamTime":' + '"' + rows[i].exam_time + '",' +
+                '"ExamResultFlag":' + '"' + examResultFlag + '"' +
                 '}';
       str += tmp;
       if (i != rows.length - 1) {
