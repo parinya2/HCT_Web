@@ -43,7 +43,7 @@
     </div>
     <div style="text-align:right; padding:7px; float:left; width:20px;"></div>
     <div style="width:50px; float:left;">
-      <button type="button" class="btn btn-primary" add-bom="true" ng-csv="getExamHistoryArrayForCsv()" filename="รายงานการสอบ.csv">พิมพ์รายงาน</button>
+      <button type="button" class="btn btn-primary" ng-click="downloadExamHistoryPDF()">พิมพ์รายงาน</button>
     </div>
   </div>
 
@@ -100,6 +100,7 @@
         <th>วันที่สอบ</th>
         <th>หมายเลขข้อสอบ</th>
         <th>เวลาที่ใช้ (นาที)</th>
+        <th>ดาวน์โหลด</th>
       <tr>
     <thead>
     <tbody>
@@ -112,6 +113,7 @@
         <td class="td-align-center">{{data.ExamDatetime}}</td>
         <td class="td-align-center">{{data.ExamNumber}}</td>
         <td class="td-align-center">{{data.ExamTime}}</td>
+        <td class="td-align-center"><a href="">กด</a></td>
       </tr>
     </tbody>
   </table>

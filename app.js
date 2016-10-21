@@ -2,51 +2,102 @@
 angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   .controller('HomeController', function($scope, $http) {
 
-    $scope.getExamHistoryHeaderForCsv = function() {
+    $scope.downloadExamHistoryPDF = function() {
+
+      var reportDict = getExamHistoryReportDict();
+      var resultArray = reportDict['resultArray'];
+      var startDateText = reportDict['startDateText'];
+      var endDateText = reportDict['endDateText'];
+      var passExamCount = reportDict['passExamCount'];
+      var failExamCount = reportDict['failExamCount'];
+      var notCompleteExamCount = reportDict['notCompleteExamCount'];
+
+      var reportTable = {
+          table: {
+              headerRows: 1,
+              body: resultArray
+          }
+      };
+
+      pdfMake.fonts = {
+        myFont: {
+          normal:'Code2000.ttf',
+          bold:'Code2000.ttf',
+          italics:'Code2000.ttf',
+          bolditalics:'Code2000.ttf'
+        }
+      };
+
+      var dd = {
+          defaultStyle: {font:'myFont'},
+          pageOrientation: 'landscape',
+          content: [
+              { text: ' ', style: 'header' },
+              { text: 'รายงานผลการสอบ ตั้งแต่วันที่ ' + startDateText + ' ถึงวันที่ ' + endDateText, style: 'header' },
+              { text: 'สอบผ่าน จำนวน ' + passExamCount + ' คน', style: 'header' },
+              { text: 'สอบไม่ผ่าน จำนวน ' + failExamCount + ' คน', style: 'header' },
+              { text: 'ทำข้อสอบไม่เสร็จ จำนวน ' + notCompleteExamCount + ' คน', style: 'header' },
+              { text: ' ', style: 'header' },
+              reportTable
+          ]
+      }
+      pdfMake.createPdf(dd).download('รายงานผลสอบ.pdf');
+    }
+
+    function getExamHistoryReportHeader() {
       return ['ลำดับที่','ชื่อ-นามสกุล','เลขประจำตัวประชาชน','หลักสูตรที่เรียน','ผลการสอบ','วันที่สอบ','หมายเลขข้อสอบ','เวลาที่ใช้ (นาที)'];
     }
 
-    $scope.getExamHistoryArrayForCsv = function() {
+    function getExamHistoryReportDict() {
+      var resultDict = {};
       var tmpArray = $scope.allData;
 
       var resultArray = [];
-      resultArray.push({p1:'ลำดับที่', p2:'ชื่อ-นามสกุล', p3:'เลขประจำตัวประชาชน', p4:'หลักสูตรที่เรียน',
-                        p5:'ผลการสอบ', p6:'วันที่สอบ', p7:'หมายเลขข้อสอบ', p8:'เวลาที่ใช้ (นาที)'});
+      resultArray.push(getExamHistoryReportHeader());
 
       var passExamCount = 0;
       var failExamCount = 0;
       var notCompleteExamCount = 0;
-      for (var i = 0; i < tmpArray.length; i++)
-      {
-        var obj = tmpArray[i];
-        var s = [];
-        for (var key in obj)
-        {
-          var value = obj[key];
-          s.push(value);
 
-          if (key == 'ExamResultFlag')
+      if (tmpArray != null)
+      {
+        for (var i = 0; i < tmpArray.length; i++)
+        {
+          var obj = tmpArray[i];
+          var idx = i + 1;
+          var s = [];
+          s.push(idx + '');
+          var keyCount = 0;
+          for (var key in obj)
           {
-            if (value == 'Y')       passExamCount++;
-            else if (value == 'N')  failExamCount++;
-            else if (value == 'X')  notCompleteExamCount++;
+            var value = obj[key];
+            if (keyCount < 7) {
+              s.push(value);
+            }
+            keyCount++;
+
+            if (key == 'ExamResultFlag')
+            {
+              if (value == 'Y')       passExamCount++;
+              else if (value == 'N')  failExamCount++;
+              else if (value == 'X')  notCompleteExamCount++;
+            }
           }
+          resultArray.push(s);
         }
-        var idx = i + 1;
-        resultArray.push({p1:idx, p2:s[0], p3:s[1], p4:s[2], p5:s[3], p6:s[4], p7:s[5], p8:s[6]});
       }
 
       var startDateText = jQuery('#searchStartDateText').text();
       var endDateText = jQuery('#searchEndDateText').text();
-      resultArray.unshift({p1:''});
-      resultArray.unshift({p1:'', p2:'จำนวนคนที่ทำข้อสอบไม่เสร็จ', p3:notCompleteExamCount});
-      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบไม่ผ่าน', p3:failExamCount});
-      resultArray.unshift({p1:'', p2:'จำนวนคนที่สอบผ่าน', p3:passExamCount});
-      resultArray.unshift({p1:'', p2:'ตั้งแต่วันที่', p3:startDateText, p4:'ถึงวันที่', p5:endDateText});
-      resultArray.unshift({p1:'', p2:'สรุปผลการทดสอบ'});
-      resultArray.unshift({p1:''});
 
-      return resultArray;
+      resultDict['resultArray'] = resultArray;
+      resultDict['notCompleteExamCount'] = notCompleteExamCount;
+      resultDict['failExamCount'] = failExamCount;
+      resultDict['passExamCount'] = passExamCount;
+      resultDict['startDateText'] = startDateText;
+      resultDict['endDateText'] = endDateText;
+
+      return resultDict;
     }
 
     $scope.chooseExamCourseDropDown = function(text, index) {
