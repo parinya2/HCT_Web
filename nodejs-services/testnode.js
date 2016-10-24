@@ -44,7 +44,7 @@ var server = app.listen(8081, function () {
 
 app.get('/getExamResultPdf', function (req, res) {
   var recordId = req.query['record_id'];
-  mariadbClient.query('SELECT * FROM exam_history WHERE record_id = :param1',
+  mariadbClient.query('SELECT exam_result_pdf_binary FROM exam_history WHERE record_id = :param1',
                     {param1: recordId},
                     function(err, rows) {
     if (err)
@@ -85,7 +85,10 @@ console.log('a='+startDate+'b='+endDate);
     }
   }
 
-  mariadbClient.query('SELECT * FROM exam_history' + extendedQueryStr +
+  var columnQueryString = ' fullname, citizen_id, course_type, exam_score,' +
+                          'exam_datetime, exam_number, exam_time, exam_result,' +
+                          'record_id, school_cert_no ';
+  mariadbClient.query('SELECT' + columnQueryString + 'FROM exam_history' + extendedQueryStr +
                       ' AND exam_datetime >= :param1 AND exam_datetime <= :param2',
                       {param1:newStartDateStr, param2:newEndDateStr},
           function(err, rows) {
