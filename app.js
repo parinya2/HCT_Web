@@ -2,6 +2,18 @@
 angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   .controller('HomeController', function($scope, $http) {
 
+    $scope.getExamResultPDF = function(recordId) {
+      waitingDialog.show('กรุณารอสักครู่ ...');
+      setTimeout(function(){
+          $http.get(globalNodeServicesPrefix + "/getExamResultPdf",
+                   {params:{record_id:recordId}})
+            .success(function(examResultPdfResponse) {
+              window.open('data:application/pdf;base64,' + examResultPdfResponse);
+              waitingDialog.hide();
+            })
+      }, 2000);
+    };
+
     $scope.downloadExamHistoryPDF = function() {
 
       var reportDict = getExamHistoryReportDict();

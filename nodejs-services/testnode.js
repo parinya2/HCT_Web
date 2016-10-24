@@ -42,6 +42,23 @@ var server = app.listen(8081, function () {
 
 });
 
+app.get('/getExamResultPdf', function (req, res) {
+  var recordId = req.query['record_id'];
+  mariadbClient.query('SELECT * FROM exam_history WHERE record_id = :param1',
+                    {param1: recordId},
+                    function(err, rows) {
+    if (err)
+      throw err;
+
+    var pdfBase64String = '';
+    for (var i = 0; i < rows.length; i++) {
+      pdfBase64String = rows[i].exam_result_pdf_binary;
+    }
+    res.end(pdfBase64String);
+  });
+  mariadbClient.end();
+});
+
 app.get('/listExamHistory', function (req, res) {
   var courseType = req.query['courseType_param'];
   var startDate = req.query['startDate_param'];
@@ -114,7 +131,8 @@ console.log('a='+startDate+'b='+endDate);
                 '"ExamDatetime":' + '"' + exam_datetime + '",' +
                 '"ExamNumber":' + '"' + rows[i].exam_number + '",' +
                 '"ExamTime":' + '"' + rows[i].exam_time + '",' +
-                '"ExamResultFlag":' + '"' + examResultFlag + '"' +
+                '"ExamResultFlag":' + '"' + examResultFlag + '",' +
+                '"RecordId":' + '"' + rows[i].record_id + '"' +
                 '}';
       str += tmp;
       if (i != rows.length - 1) {
@@ -136,6 +154,8 @@ app.post('/addExamHistory', function (req, res) {
   var courseType = req.body.courseType;
   var examDateTime = req.body.examDateTime;
   var examResult = req.body.examResult;
+  var schoolCertNo = req.body.schoolCertNo;
+  var examResultPdfBase64String = req.body.examResultPdfBase64String;
 
   /*
     mariadbClient.query('INSERT INTO exam_history ' +
@@ -146,15 +166,16 @@ app.post('/addExamHistory', function (req, res) {
   */
 
   mariadbClient.query('INSERT INTO exam_history ' +
-          '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime, exam_result)' +
-          ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8)',
+          '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime, exam_result, school_cert_no)' +
+          ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8, :param9)',
           {param1: fullname, param2: citizenId, param3: examNumber, param4: examTime,
-           param5: examScore, param6: courseType, param7: examDateTime, param8: examResult},
+           param5: examScore, param6: courseType, param7: examDateTime, param8: examResult,
+           param9: schoolCertNo},
           function(err, rows) {
     if (err)
       throw err;
 
-    var str = '';
+    var str = 'Add Exam History DONE';
 
     console.dir(str);
     res.end(str);
