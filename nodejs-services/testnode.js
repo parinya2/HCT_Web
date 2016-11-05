@@ -1,5 +1,6 @@
 var bodyParser = require('body-parser')
 var express = require('express');
+var fs = require('fs');
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -10,7 +11,7 @@ var mariadbClient = new MariaClient({
   password: '&SOMEWHEREONLYWEKNOWthisisabookPEACEFUL$71339416@',
   db: 'hct_database'
 });
-
+var examResultPdfFolderPath = "exam_result_pdf";
 var bcrypt = require('bcrypt');
 
 // Add headers
@@ -42,9 +43,41 @@ var server = app.listen(8081, function () {
 
 });
 
+function writeBase64StringToFilePath(base64Str, filePath) {
+  var buf = new Buffer(base64Str, 'base64');
+  fs.writeFile(filePath, buf, function(err){
+    if (err) {
+      console.log('write file error');
+      console.log(err);
+    } else {
+      console.log('write file complete');
+    }
+  });
+}
+
+function readBase64StringFromFilePath(filePath) {
+  if (fs.existsSync(filePath)) {
+    var fileData = fs.readFileSync(filePath);
+    var base64Str = new Buffer(fileData).toString('base64');
+    return base64Str;
+  } else {
+    console.log('read file fail, file not exist : ' + filePath);
+    return null;
+  }
+}
+
+function generateExamResultPdfFileName(examDateTime, citizenId) {
+  var tmpDateStr = examDateTime.replace(/:/g, '-');
+  tmpDateStr = tmpDateStr.replace(/\s/g, '_');
+  var max = 9999;
+  var min = 1000;
+  var randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  return tmpDateStr + '_' + citizenId + '_' + randomNumber;
+}
+
 app.get('/getExamResultPdf', function (req, res) {
   var recordId = req.query['record_id'];
-  mariadbClient.query('SELECT exam_result_pdf_binary FROM exam_history WHERE record_id = :param1',
+  mariadbClient.query('SELECT exam_result_pdf_filename FROM exam_history WHERE record_id = :param1',
                     {param1: recordId},
                     function(err, rows) {
     if (err)
@@ -52,7 +85,13 @@ app.get('/getExamResultPdf', function (req, res) {
 
     var pdfBase64String = '';
     for (var i = 0; i < rows.length; i++) {
-      pdfBase64String = rows[i].exam_result_pdf_binary;
+      var fileName = rows[i].exam_result_pdf_filename;
+      var filePath = examResultPdfFolderPath + '/' + fileName;
+      var base64Str = readBase64StringFromFilePath(filePath);
+      if (base64Str != null) {
+        pdfBase64String = base64Str;
+      }
+      break;
     }
     res.end(pdfBase64String);
   });
@@ -160,20 +199,17 @@ app.post('/addExamHistory', function (req, res) {
   var schoolCertNo = req.body.schoolCertNo;
   var examResultPdfBase64String = req.body.examResultPdfBase64String;
 
-  /*
-    mariadbClient.query('INSERT INTO exam_history ' +
-          '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime)' +
-          ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7)',
-          {param1: 'สมศักดิ์ ค้าแก้ว', param2: '123456789', param3: '34', param4: 45, param5:47, param6:1, param7: '2016-05-23T08:30:01'},
-          function(err, rows) {
-  */
+  var examResultPdfFileName = generateExamResultPdfFileName(examDateTime, citizenId);
+  var examResultPdfFilePath = examResultPdfFolderPath + '/' + examResultPdfFileName;
+  writeBase64StringToFilePath(examResultPdfBase64String, examResultPdfFilePath);
 
   mariadbClient.query('INSERT INTO exam_history ' +
-          '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, exam_datetime, exam_result, school_cert_no)' +
-          ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8, :param9)',
+          '(fullname, citizen_id, exam_number, exam_time, exam_score, course_type, ' +
+          ' exam_datetime, exam_result, school_cert_no, exam_result_pdf_filename)' +
+          ' VALUES (:param1, :param2, :param3, :param4, :param5, :param6, :param7, :param8, :param9, :param10)',
           {param1: fullname, param2: citizenId, param3: examNumber, param4: examTime,
            param5: examScore, param6: courseType, param7: examDateTime, param8: examResult,
-           param9: schoolCertNo},
+           param9: schoolCertNo, param10: examResultPdfFileName},
           function(err, rows) {
     if (err)
       throw err;
