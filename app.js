@@ -1,4 +1,6 @@
 //Define an angular module for our app
+var globalNodeServicesPrefix = 'http://128.199.95.79:8081';
+
 angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   .controller('HomeController', function($scope, $http) {
 
