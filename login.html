@@ -47,7 +47,7 @@
       .controller('LoginController', function($scope, $http) {
         $scope.login = function(username, password) {
 
-          $http.post('http://localhost:8081' + "/login", {username_param:username, password_param: password})
+          $http.post('http://128.199.95.79:8081' + "/login", {username_param:username, password_param: password})
             .success(function(data, status, headers, config) {
               if (data == 'SUCCESS') {
                 //document.cookie = 'user=' + username +'; expires=Thu, 18 Dec 2019 12:00:00 UTC;';
