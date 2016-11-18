@@ -1,6 +1,20 @@
 //Define an angular module for our app
 var globalNodeServicesPrefix = 'http://128.199.95.79:8081';
 
+function getSchoolDetail(schoolAbbr) {
+  jQuery.post(globalNodeServicesPrefix + "/getSchoolDetail" ,
+              {schoolAbbr: schoolAbbr},
+              function(data, status) {
+                  var tmpArray = JSON.parse(data);
+                  if (tmpArray.length > 0) {
+                    var obj = tmpArray[0];
+                    var schoolFullName = obj['SchoolFullName'];
+                    var schoolCertNo = obj['SchoolCertNo'];
+                    jQuery("#schoolNameText").text(schoolFullName);
+                }
+              });
+}
+
 angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   .controller('HomeController', function($scope, $http) {
 
@@ -195,7 +209,6 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   })
   .controller('LoginController', function($scope, $http) {
     $scope.login = function(username, password) {
-
       $http.post(globalNodeServicesPrefix + "/login", {username_param:username, password_param: password})
         .success(function(data, status, headers, config) {
           if (data.indexOf('SUCCESS') != -1) {

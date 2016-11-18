@@ -124,7 +124,7 @@ app.get('/listExamHistory', function (req, res) {
     console.log('targetSchoolCertNo is null');
     res.end('[]');
     return;
-  } 
+  }
 
 console.log('a='+startDate+'b='+endDate);
   var extendedQueryStr = ' WHERE 1=1 ';
@@ -270,6 +270,32 @@ app.post('/login', function (req, res) {
       });
     } else {
       res.end('FAIL');
+    }
+  });
+  mariadbClient.end();
+});
+
+app.post('/getSchoolDetail', function (req, res) {
+  var schoolAbbr = req.body.schoolAbbr;
+
+  console.dir('schoolAbbr = ' + schoolAbbr);
+
+  mariadbClient.query('SELECT * FROM all_schools ' +
+          ' WHERE school_abbr = :param1',
+          {param1: schoolAbbr},
+          function(err, rows) {
+    if (err)
+      throw err;
+
+    if (rows.length > 0) {
+      var tmp = '[ {' +
+                '"SchoolAbbr":' + '"' + rows[0].school_abbr + '",' +
+                '"SchoolCertNo":' + '"' + rows[0].school_cert_no + '",' +
+                '"SchoolFullName":' + '"' + rows[0].school_full_name + '"' +
+                '} ]';
+      res.end(tmp);
+    } else {
+      res.end('[]');
     }
   });
   mariadbClient.end();
