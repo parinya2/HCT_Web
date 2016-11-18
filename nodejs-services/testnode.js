@@ -107,6 +107,25 @@ app.get('/listExamHistory', function (req, res) {
   var courseType = req.query['courseType_param'];
   var startDate = req.query['startDate_param'];
   var endDate = req.query['endDate_param'];
+  var targetSchoolAbbr = req.query['targetSchoolAbbr_param'];
+
+  if (targetSchoolAbbr == null) {
+     console.log('targetSchoolAbbr is null ');
+     res.end('[]');
+     return;
+   }
+
+  var targetSchoolCertNo = null;
+  if      (targetSchoolAbbr == 'hct')  targetSchoolCertNo = '1122339';
+  else if (targetSchoolAbbr == 'abc')  targetSchoolCertNo = '1122338';
+  else if (targetSchoolAbbr == 'xyz')  targetSchoolCertNo = '1122337';
+
+  if (targetSchoolCertNo == null) {
+    console.log('targetSchoolCertNo is null');
+    res.end('[]');
+    return;
+  } 
+
 console.log('a='+startDate+'b='+endDate);
   var extendedQueryStr = ' WHERE 1=1 ';
   if (courseType == '1') extendedQueryStr = ' WHERE course_type = "1" ';
@@ -133,8 +152,8 @@ console.log('a='+startDate+'b='+endDate);
                           'exam_datetime, exam_number, exam_time, exam_result,' +
                           'record_id, school_cert_no ';
   mariadbClient.query('SELECT' + columnQueryString + 'FROM exam_history' + extendedQueryStr +
-                      ' AND exam_datetime >= :param1 AND exam_datetime <= :param2',
-                      {param1:newStartDateStr, param2:newEndDateStr},
+                      ' AND exam_datetime >= :param1 AND exam_datetime <= :param2 AND school_cert_no = :param3',
+                      {param1:newStartDateStr, param2:newEndDateStr, param3:targetSchoolCertNo},
           function(err, rows) {
     if (err)
       throw err;

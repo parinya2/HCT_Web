@@ -123,12 +123,14 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       var examCourse = jQuery('#examCourseDropdownIndex').text();
       var startDate = jQuery('#homeStartDateText').val();
       var endDate = jQuery('#homeEndDateText').val();
+      var targetSchoolAbbr = sessionStorage.getItem('targetSchoolAbbr');
 
       waitingDialog.show('กรุณารอสักครู่ ...');
 
       setTimeout(function(){
           $http.get(globalNodeServicesPrefix + "/listExamHistory",
-                   {params:{courseType_param:examCourse, startDate_param:startDate, endDate_param:endDate}})
+                   {params:{courseType_param:examCourse, startDate_param:startDate,
+                            endDate_param:endDate, targetSchoolAbbr_param:targetSchoolAbbr}})
             .success(function(historyResponse) {
               $scope.allData = historyResponse;
 
