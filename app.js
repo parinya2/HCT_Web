@@ -40,6 +40,7 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       var passExamCount = reportDict['passExamCount'];
       var failExamCount = reportDict['failExamCount'];
       var notCompleteExamCount = reportDict['notCompleteExamCount'];
+      var schoolFullName = jQuery("#schoolNameText").text();
 
       var reportTable = {
           table: {
@@ -61,6 +62,8 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
           defaultStyle: {font:'myFont'},
           pageOrientation: 'landscape',
           content: [
+              { text: ' ', style: 'header' },
+              { text: schoolFullName, style: 'header' },
               { text: ' ', style: 'header' },
               { text: 'รายงานผลการสอบ ตั้งแต่วันที่ ' + startDateText + ' ถึงวันที่ ' + endDateText, style: 'header' },
               { text: 'สอบผ่าน จำนวน ' + passExamCount + ' คน', style: 'header' },
