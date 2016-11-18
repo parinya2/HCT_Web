@@ -40,13 +40,14 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <!--<a class="navbar-brand" href="#">Chappters GPS</a>-->
-      <!-- <img src="/HCT_Web/images/dlt_logo.png" alt="" width="50" height="50"> -->
+      <img src="/images/dlt_logo.png" alt="" width="50" height="50">
     </div>
     <div ng-controller="NavBarController">
       <ul class="nav navbar-nav">
-        <li id="menu0" onclick="selectMenu(0)"><a href="#/home">หน้าหลัก</a></li>
-        <!--<li id="menu1" onclick="selectMenu(1)"><a href="#/report">ออกรายงาน</a></li>-->
-        <!--<li id="menu4" onclick="selectMenu(2)"><a href="#/setting">ตั้งค่า</a></li>-->
+        <li><p class="navbar-text"></p></li>
+        <!--<li id="menu0" onclick="selectMenu(0)"><a href="#/home">HomePage</a></li>-->
+        <!--<li id="menu1" onclick="selectMenu(1)"><a href="#/report">ReportPage</a></li>-->
+        <!--<li id="menu4" onclick="selectMenu(2)"><a href="#/setting">SettingPage</a></li>-->
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a ng-click="logout()" href=""><span class="glyphicon glyphicon-log-out"></span> ออกจากระบบ</a></li>
@@ -93,10 +94,10 @@
   var jQuery = $.noConflict();
   var globalDeviceList = [];
   var globalMergedDataList = [];
-  var globalGeocoder = new google.maps.Geocoder;
+  var globalGeocoder = null; //new google.maps.Geocoder;
   var homeGoogleMap;
   var homeGoogleMapMarkers = [];
-  var googleMapInfoWindow = new google.maps.InfoWindow({});
+  var googleMapInfoWindow = null; //new google.maps.InfoWindow({});
   var globalHistoryFuelChart;
 
   function selectMenu(menuIndex) {
@@ -121,14 +122,33 @@
     return "";
   }
 
+  var user = sessionStorage.getItem('user');
+  var schoolAbbr = sessionStorage.getItem('schoolAbbr');
+  var targetSchoolAbbr = sessionStorage.getItem('targetSchoolAbbr');
+
   var token = null;
-  if (!getCookie('user')) {
-    window.location.href = './login.html';
-  } else {
+  var shouldRedirect = false;
+  if (user == null || schoolAbbr == null || targetSchoolAbbr == null) {
+     shouldRedirect = true;
+   } else {
+     var currentURL = window.location.href;
 
-  }
+     if (schoolAbbr != 'admin' && schoolAbbr != 'dlt') {
+        if (currentURL.indexOf('http://' + schoolAbbr + '.') == -1) {
+           shouldRedirect = true;
+         }
+     } else {
+        if (currentURL.indexOf('http://' + targetSchoolAbbr + '.') == -1) {
+           shouldRedirect = true;
+         }
+     }
+   }
 
-
+   if (shouldRedirect) {
+      sessionStorage.clear();
+      window.location.href = './login.html';
+   }
+   jQuery("#schoolNameText").text(targetSchoolAbbr);
 </script>
 
 </body>

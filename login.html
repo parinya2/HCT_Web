@@ -49,10 +49,23 @@
 
           $http.post('http://128.199.95.79:8081' + "/login", {username_param:username, password_param: password})
             .success(function(data, status, headers, config) {
-              if (data == 'SUCCESS') {
+              if (data.indexOf('SUCCESS') != -1) {
                 //document.cookie = 'user=' + username +'; expires=Thu, 18 Dec 2019 12:00:00 UTC;';
-                document.cookie = 'user=' + username +';';
-                window.location.href = './index.html';
+                var tmpArr = data.split(",");
+                if (tmpArr.length == 3) {
+                                    
+                  var currentURL = window.location.href;
+                  var startIdx = currentURL.indexOf('://') + 3;
+                  var endIdx = currentURL.indexOf('.clickeexam');
+                  var targetSchoolAbbr = currentURL.substring(startIdx, endIdx);
+
+                  sessionStorage.setItem('user', username);
+                  sessionStorage.setItem('schoolAbbr', tmpArr[1]);
+                  sessionStorage.setItem('schoolCertNo', tmpArr[2]);
+                  sessionStorage.setItem('targetSchoolAbbr', targetSchoolAbbr);
+
+                  window.location.href = './index.html';
+                }
               } else if (data == 'FAIL') {
                 alert("ชื่อผู้ใช้หรือรหัสผ่านผิด กรุณาลองอีกครั้ง");
               }

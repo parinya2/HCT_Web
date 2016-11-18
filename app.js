@@ -367,6 +367,7 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   })
   .controller('NavBarController', function($scope) {
     $scope.logout = function() {
+      sessionStorage.clear();
       window.location.href = './login.html';
     }
   })

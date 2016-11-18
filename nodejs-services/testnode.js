@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
                           'http://abc.clickeexam.in', 'http://xyz.clickeexam.in'];
     var origin = req.headers.origin;
     if (allowedOrigins.indexOf(origin) > -1) {
-      res.setHeader('Access-Control-Allow-Origin', origin);  
+      res.setHeader('Access-Control-Allow-Origin', origin);
     }
 
     // Request methods you wish to allow
@@ -244,7 +244,7 @@ app.post('/login', function (req, res) {
       var hashedPassword = rows[0].password;
       bcrypt.compare(password, hashedPassword, function(err, result) {
         if (result == true) {
-          res.end('SUCCESS');
+          res.end('SUCCESS,' + rows[0].school_abbr + ',' + rows[0].school_cert_no);
         } else {
           res.end('FAIL');
         }
@@ -260,13 +260,15 @@ app.post('/createUser', function (req, res) {
   var username = req.body.username_param;
   var password = req.body.password_param;
   var saltRounds = 10;
-
+  var schoolAbbr = req.body.school_abbr;
+  var schoolCertNo = req.body.school_cert_no;
   bcrypt.hash(password, saltRounds, function(err, hashedPassword) {
     console.dir('User='+username+'  Pass='+password+ '  Bcrypt='+hashedPassword);
+    console.dir('schoolAbbr=' + schoolAbbr + ' schoolCertNo=' + schoolCertNo);
 
-    mariadbClient.query('INSERT INTO all_users (username, password)' +
-            ' VALUES (:param1, :param2)',
-            {param1: username, param2: hashedPassword},
+    mariadbClient.query('INSERT INTO all_users (username, password, school_abbr, school_cert_no)' +
+            ' VALUES (:param1, :param2, :param3, :param4)',
+            {param1: username, param2: hashedPassword, param3: school_abbr, param4: school_cert_no},
             function(err, rows) {
       if (err)
         throw err;
