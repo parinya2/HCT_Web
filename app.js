@@ -11,6 +11,7 @@ function getSchoolDetail(schoolAbbr) {
                     var schoolFullName = obj['SchoolFullName'];
                     var schoolCertNo = obj['SchoolCertNo'];
                     jQuery("#schoolNameText").text(schoolFullName);
+                    sessionStorage.setItem('targetSchoolCertNo', schoolCertNo);
                 }
               });
 }
@@ -137,14 +138,14 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       var examCourse = jQuery('#examCourseDropdownIndex').text();
       var startDate = jQuery('#homeStartDateText').val();
       var endDate = jQuery('#homeEndDateText').val();
-      var targetSchoolAbbr = sessionStorage.getItem('targetSchoolAbbr');
+      var targetSchoolCertNo = sessionStorage.getItem('targetSchoolCertNo');
 
       waitingDialog.show('กรุณารอสักครู่ ...');
 
       setTimeout(function(){
           $http.get(globalNodeServicesPrefix + "/listExamHistory",
                    {params:{courseType_param:examCourse, startDate_param:startDate,
-                            endDate_param:endDate, targetSchoolAbbr_param:targetSchoolAbbr}})
+                            endDate_param:endDate, targetSchoolCertNo_param:targetSchoolCertNo}})
             .success(function(historyResponse) {
               $scope.allData = historyResponse;
 

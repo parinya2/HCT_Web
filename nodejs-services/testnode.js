@@ -107,18 +107,7 @@ app.get('/listExamHistory', function (req, res) {
   var courseType = req.query['courseType_param'];
   var startDate = req.query['startDate_param'];
   var endDate = req.query['endDate_param'];
-  var targetSchoolAbbr = req.query['targetSchoolAbbr_param'];
-
-  if (targetSchoolAbbr == null) {
-     console.log('targetSchoolAbbr is null ');
-     res.end('[]');
-     return;
-   }
-
-  var targetSchoolCertNo = null;
-  if      (targetSchoolAbbr == 'hct')  targetSchoolCertNo = '1122339';
-  else if (targetSchoolAbbr == 'abc')  targetSchoolCertNo = '1122338';
-  else if (targetSchoolAbbr == 'xyz')  targetSchoolCertNo = '1122337';
+  var targetSchoolCertNo = req.query['targetSchoolCertNo_param'];
 
   if (targetSchoolCertNo == null) {
     console.log('targetSchoolCertNo is null');
