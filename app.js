@@ -190,180 +190,43 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
   })
   .controller('HistoryController', function($scope, $http) {
 
-    $scope.chooseVehicleDropDown = function(index) {
-      jQuery('#historyVehicleDropdownText').text(index);
-    }
+  })
+  .controller('LoginController', function($scope, $http) {
+    $scope.login = function(username, password) {
 
-    $scope.initHistoryGoogleMap = function() {
-      historyGoogleMap = new google.maps.Map(document.getElementById('historyGoogleMap'));
-      historyGoogleMap.setZoom(16);
-      historyGoogleMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+      $http.post(globalNodeServicesPrefix + "/login", {username_param:username, password_param: password})
+        .success(function(data, status, headers, config) {
+          if (data.indexOf('SUCCESS') != -1) {
+            //document.cookie = 'user=' + username +'; expires=Thu, 18 Dec 2019 12:00:00 UTC;';
+            var tmpArr = data.split(",");
+            if (tmpArr.length == 3) {
 
-      var center = new google.maps.LatLng(13.770000, 100.620000);
-      historyGoogleMap.setCenter(center)
-    }
+              var currentURL = window.location.href;
+              var startIdx = currentURL.indexOf('://') + 3;
+              var endIdx = currentURL.indexOf('.clickeexam');
+              var targetSchoolAbbr = currentURL.substring(startIdx, endIdx);
 
-    $scope.loadHistoryData = function(deviceID, startDateTime, endDateTime) {
+              sessionStorage.setItem('user', username);
+              sessionStorage.setItem('schoolAbbr', tmpArr[1]);
+              sessionStorage.setItem('schoolCertNo', tmpArr[2]);
+              sessionStorage.setItem('targetSchoolAbbr', targetSchoolAbbr);
 
-      waitingDialog.show('กรุณารอสักครู่ ...');
-      setTimeout(function(){
-          $http.get(globalURLPrefix + "/data-json/history-data.json")
-            .success(function(historyResponse) {
-              $scope.allData = historyResponse;
-              drawMarkerAndLineOnHistoryGoogleMap(historyResponse);
-              drawFuelGraph(true, historyResponse);
-              waitingDialog.hide();
-            })
-      }, 2000);
+              window.location.href = './index.html';
+            }
+          } else if (data == 'FAIL') {
+            alert("ชื่อผู้ใช้หรือรหัสผ่านผิด กรุณาลองอีกครั้ง");
+          }
+        })
+        .error(function (data, status, header, config) {
 
-    }
-
-    $scope.relocateHistoryGoogleMap = function(lat, lon) {
-      historyGoogleMap.setZoom(16);
-      historyGoogleMap.setCenter(new google.maps.LatLng(parseFloat(lat), parseFloat(lon)));
+        });
     };
-
-    function drawMarkerAndLineOnHistoryGoogleMap(historyDataList) {
-      var flightPlanCoordinates = [];
-
-      for (var i = 0; i < historyDataList.length; i++) {
-        var lat = historyDataList[i].Lat;
-        var lon = historyDataList[i].Lon;
-        var center = new google.maps.LatLng(parseFloat(lat), parseFloat(lon));
-        historyGoogleMap.setCenter(center)
-
-        var marker = new google.maps.Marker({
-          position: center,
-          map: historyGoogleMap
-        });
-
-        flightPlanCoordinates.push({lat: parseFloat(lat), lng: parseFloat(lon)});
-      }
-
-      var flightPath = new google.maps.Polyline({
-        path: flightPlanCoordinates,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 4
-      });
-
-      flightPath.setMap(historyGoogleMap);
-
-      historyGoogleMap.setZoom(14);
-      historyGoogleMap.setMapTypeId(google.maps.MapTypeId.ROADMAP);
-    }
-
-    function drawFuelGraph(flag, historyDataList) {
-      var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
-      var fuelArray = [];
-      var dateTimeArray = [];
-      var strokeColor;
-
-      if (flag) {
-        for (var i = 0; i < historyDataList.length; i++) {
-          var dateTime = historyDataList[i].DateTime;
-          var fuelPercentage = historyDataList[i].FuelPercentage;
-
-          dateTimeArray.push(dateTime);
-          fuelArray.push(fuelPercentage);
-        }
-        strokeColor = "rgba(151,187,205,1)";
-      } else {
-        dateTimeArray = ["",""];
-        fuelArray = [0,100];
-        strokeColor = "rgba(255,255,255,1)";
-      }
-
-      var lineChartData = {
-        labels : dateTimeArray,
-        datasets : [
-          {
-            label: "Fuel Graph dataset",
-            fillColor : "rgba(151,187,205,0.2)",
-            strokeColor : strokeColor,
-            pointColor : "rgba(151,187,205,1)",
-            pointStrokeColor : "#fff",
-            pointHighlightFill : "#fff",
-            pointHighlightStroke : "rgba(151,187,205,1)",
-            data : fuelArray
-          }
-        ]
-      }
-
-      var ctx = document.getElementById("historyFuelCanvas").getContext("2d");
-      if (globalHistoryFuelChart != undefined) {
-        globalHistoryFuelChart.destroy();
-      }
-
-      if (flag) {
-        globalHistoryFuelChart = new Chart(ctx).Line(lineChartData, {
-          responsive: true,
-          pointHitDetectionRadius : 5,
-          bezierCurve : false
-        });
-      } else {
-        globalHistoryFuelChart = new Chart(ctx).Line(lineChartData, {
-          responsive: true,
-          pointDot : false,
-          datasetFill : false,
-          pointHitDetectionRadius : 0
-        });
-      }
-
-    }
-
-    selectMenu(99);
-
-    if (globalDeviceList.length == 0) {
-      $http.get(globalURLPrefix + "/data-json/device-list-data.json")
-        .success(function(response) {
-          $scope.deviceList = response;
-          globalDeviceList = response;
-      })
-    } else {
-      $scope.deviceList = globalDeviceList;
-    }
-
-    jQuery(function () {
-      jQuery('#historyStartDateTimePicker').datetimepicker({
-        locale: 'th'
-      });
-      jQuery('#historyEndDateTimePicker').datetimepicker({
-        locale: 'th',
-        useCurrent: false
-      });
-
-      jQuery("#historyStartDateTimePicker").on("dp.change",function (e) {
-          jQuery('#historyEndDateTimePicker').data("DateTimePicker").minDate(e.date);
-      });
-      jQuery("#historyEndDateTimePicker").on("dp.change",function (e) {
-          jQuery('#historyStartDateTimePicker').data("DateTimePicker").maxDate(e.date);
-      });
-
-      jQuery('input[name="historyDateRange"]').daterangepicker({
-          timePicker: true,
-          timePicker24Hour: true,
-          timePickerIncrement: 15,
-          locale: {
-              format: 'DD/MM/YYYY   (hh:mm A)'
-          },
-          dateLimit: {
-            days: 3
-          }
-      });
-    });
-
-    drawFuelGraph(false, []);
-    $scope.initHistoryGoogleMap();
   })
   .controller('ReportController', function($scope) {
     $scope.message = 'This is ReportController';
-    selectMenu(1);
   })
   .controller('SettingController', function($scope) {
     $scope.message = 'This is SettingController';
-    selectMenu(2);
   })
   .controller('NavBarController', function($scope) {
     $scope.logout = function() {

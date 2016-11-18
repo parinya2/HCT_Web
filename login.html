@@ -37,45 +37,17 @@
       </form>
     </div>
 
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-  <script>
-    angular.module('hctApp', ['ngRoute'])
-      .controller('LoginController', function($scope, $http) {
-        $scope.login = function(username, password) {
-
-          $http.post('http://128.199.95.79:8081' + "/login", {username_param:username, password_param: password})
-            .success(function(data, status, headers, config) {
-              if (data.indexOf('SUCCESS') != -1) {
-                //document.cookie = 'user=' + username +'; expires=Thu, 18 Dec 2019 12:00:00 UTC;';
-                var tmpArr = data.split(",");
-                if (tmpArr.length == 3) {
-                                    
-                  var currentURL = window.location.href;
-                  var startIdx = currentURL.indexOf('://') + 3;
-                  var endIdx = currentURL.indexOf('.clickeexam');
-                  var targetSchoolAbbr = currentURL.substring(startIdx, endIdx);
-
-                  sessionStorage.setItem('user', username);
-                  sessionStorage.setItem('schoolAbbr', tmpArr[1]);
-                  sessionStorage.setItem('schoolCertNo', tmpArr[2]);
-                  sessionStorage.setItem('targetSchoolAbbr', targetSchoolAbbr);
-
-                  window.location.href = './index.html';
-                }
-              } else if (data == 'FAIL') {
-                alert("ชื่อผู้ใช้หรือรหัสผ่านผิด กรุณาลองอีกครั้ง");
-              }
-            })
-            .error(function (data, status, header, config) {
-
-            });
-        };
-      })
-  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-csv/0.3.6/ng-csv.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.8/angular-sanitize.min.js.map"></script>
+  <script src="app.js"></script>
 
   </body>
 </html>
