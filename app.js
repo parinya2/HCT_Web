@@ -1,5 +1,5 @@
 //Define an angular module for our app
-var globalNodeServicesPrefix = 'http://main.clickeexam.in:8880';
+var globalNodeServicesPrefix = 'https://main.clickeexam.in:8443';
 
 function getSchoolDetail(schoolAbbr) {
   jQuery.post(globalNodeServicesPrefix + "/getSchoolDetail" ,

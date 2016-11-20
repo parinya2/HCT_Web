@@ -47,8 +47,8 @@ var httpsOptions  = {
   key: fs.readFileSync('key.pem'),
   cert: fs.readFileSync('cert.pem')
 };
-var server = http.createServer(app);
-//var server = https.createServer(httpsOptions, app);
+//var server = http.createServer(app);
+var server = https.createServer(httpsOptions, app);
 server.listen(8443, function () {
 
   var host = server.address().address
