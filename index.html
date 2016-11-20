@@ -133,11 +133,11 @@
      var currentURL = window.location.href;
 
      if (schoolAbbr != 'admin' && schoolAbbr != 'dlt') {
-        if (currentURL.indexOf('http://' + schoolAbbr + '.') == -1) {
+        if (currentURL.indexOf('://' + schoolAbbr + '.') == -1) {
            shouldRedirect = true;
          }
      } else {
-        if (currentURL.indexOf('http://' + targetSchoolAbbr + '.') == -1) {
+        if (currentURL.indexOf('://' + targetSchoolAbbr + '.') == -1) {
            shouldRedirect = true;
          }
      }

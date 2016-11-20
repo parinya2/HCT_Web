@@ -21,7 +21,9 @@ app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
     var allowedOrigins = ['http://main.clickeexam.in', 'http://hct.clickeexam.in',
-                          'http://abc.clickeexam.in', 'http://xyz.clickeexam.in'];
+                          'http://abc.clickeexam.in', 'http://xyz.clickeexam.in',
+                          'https://main.clickeexam.in', 'https://hct.clickeexam.in',
+                          'https://abc.clickeexam.in', 'https://xyz.clickeexam.in'];
     var origin = req.headers.origin;
     if (allowedOrigins.indexOf(origin) > -1) {
       res.setHeader('Access-Control-Allow-Origin', origin);
@@ -47,7 +49,7 @@ var httpsOptions  = {
 };
 var server = http.createServer(app);
 //var server = https.createServer(httpsOptions, app);
-server.listen(8880, function () {
+server.listen(8443, function () {
 
   var host = server.address().address
   var port = server.address().port
