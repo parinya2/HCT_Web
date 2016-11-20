@@ -1,6 +1,8 @@
 var bodyParser = require('body-parser')
 var express = require('express');
 var fs = require('fs');
+var http = require('http');
+var https = require('https');
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -39,14 +41,20 @@ app.use(function (req, res, next) {
     next();
 });
 
-var server = app.listen(8081, function () {
+var httpsOptions  = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+var server = http.createServer(app);
+//var server = https.createServer(httpsOptions, app);
+server.listen(8880, function () {
 
   var host = server.address().address
   var port = server.address().port
 
   console.log("Example app listening at http://%s:%s", host, port)
-
 });
+
 
 function writeBase64StringToFilePath(base64Str, filePath) {
   var buf = new Buffer(base64Str, 'base64');
@@ -302,7 +310,7 @@ app.post('/createUser', function (req, res) {
 
     mariadbClient.query('INSERT INTO all_users (username, password, school_abbr, school_cert_no)' +
             ' VALUES (:param1, :param2, :param3, :param4)',
-            {param1: username, param2: hashedPassword, param3: school_abbr, param4: school_cert_no},
+            {param1: username, param2: hashedPassword, param3: schoolAbbr, param4: schoolCertNo},
             function(err, rows) {
       if (err)
         throw err;
