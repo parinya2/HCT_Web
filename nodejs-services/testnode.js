@@ -4,8 +4,8 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({limit:"1mb"}));
+app.use(bodyParser.urlencoded({limit:"1mb", extended: true}));
 var MariaClient = require('mariasql');
 var mariadbClient = new MariaClient({
   host: '127.0.0.1',
