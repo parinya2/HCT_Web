@@ -9,7 +9,7 @@
     <div style="float:left; width:200px; text-align:center; padding:7px;">
       หมายเลขบัตร ปชช. / Passport
     </div>
-    <div style="float:left; width:200px;">
+    <div style="float:left; width:230px;">
       <div class="form-group">
         <input id="citizenIdText" type="text" class="form-control" />
       </div>
@@ -31,12 +31,12 @@
       หลักสูตรที่สมัครเรียน
     </div>
     <div class="dropdown btn-group" style="float:left;">
-      <button class="btn btn-default dropdown-toggle" style="width:200px" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <button class="btn btn-default dropdown-toggle" style="width:230px" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <span id="studentEnrolCourseDropdownText"> หลักสูตรสอนขับรถยนต์ </span>
 	<span class="th-td-hidden" id="studentEnrolCourseDropdownIndex">1</span>
 	<span class="caret"></span>
       </button>
-      <ul class="dropdown-menu" style="width:200px;" aria-labelledby="dropdownMenu2">
+      <ul class="dropdown-menu" style="width:230px;" aria-labelledby="dropdownMenu2">
 	<li><a href="" ng-click="chooseStudentEnrolCourseDropdown('หลักสูตรสอนขับรถยนต์','1')">หลักสูตรสอนขับรถยนต์</a></li>
 	<li><a href="" ng-click="chooseStudentEnrolCourseDropdown('หลักสูตรสอนขับรถจักรยานยนต์','2')">หลักสูตรสอนขับรถจักรยานยนต์</a></li>
       </ul>
@@ -88,34 +88,34 @@
   <table id="studentEnrolTable" style="width:90%; float:none; margin:auto;" class="table table-responsive table-hover table-center-header">
     <thead>
       <tr>
-	<th>ชื่อ-นามสกุล</th>
-	<th>หมายเลขบัตร ปชช. / Passport</th>
-	<th>หลักสูตรที่สมัครเรียน</th>
-	<th>วันที่สมัครเรียน</th>
-	<th>สอบแล้วกี่ครั้ง</th>
-	<th></th>
-	<th></th>
+	       <th>ชื่อ-นามสกุล</th>
+	       <th>หมายเลขบัตร ปชช. / Passport</th>
+	       <th>หลักสูตรที่สมัครเรียน</th>
+	       <th>วันที่สมัครเรียน</th>
+	       <th>สอบแล้วกี่ครั้ง</th>
+	       <th></th>
+	       <th></th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="data in studentEnrolData">
-	<td class="td-align-center">{{data.Fullname}}</td>
-	<td class="td-align-center">{{data.CitizenID}}</td>
-	<td class="td-align-center">{{data.CourseName}}</td>
-	<td class="td-align-center">{{data.EnrolDate}}</td>
-	<td class="td-align-center">
-    	  <div class="dropdown btn-group">
+	      <td style="vertical-align:middle;" class="td-align-center">{{data.Fullname}}</td>
+	      <td style="vertical-align:middle;" class="td-align-center">{{data.CitizenID}}</td>
+	      <td style="vertical-align:middle;" class="td-align-center">{{data.CourseName}}</td>
+	      <td style="vertical-align:middle;" class="td-align-center">{{data.EnrolDate}}</td>
+	      <td class="td-align-center">
+    	    <div class="dropdown btn-group">
             <button class="btn btn-default dropdown-toggle" style="width:50px" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-              <span id="studentExamCountDropdownText{{$index}}">{{data.ExamCount}} </span>
-	      <span class="caret"></span>
+               <span id="studentExamCountDropdownText{{$index}}">{{data.ExamCount}} </span>
+	             <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu3" style="width:50px; min-width:1px;">
-	      <li><a href="" ng-click="chooseExamCountDropdown($index,'0')">0</a></li>
-	      <li><a href="" ng-click="chooseExamCountDropdown($index,'1')">1</a></li>
-	      <li><a href="" ng-click="chooseExamCountDropdown($index,'2')">2</a></li>
-	      <li><a href="" ng-click="chooseExamCountDropdown($index,'3')">3</a></li>
-	      <li><a href="" ng-click="chooseExamCountDropdown($index,'4')">4</a></li>
-	      <li><a href="" ng-click="chooseExamCountDropdown($index,'5')">5</a></li>
+	             <li><a href="" ng-click="chooseExamCountDropdown($index,'0')">0</a></li>
+	             <li><a href="" ng-click="chooseExamCountDropdown($index,'1')">1</a></li>
+	             <li><a href="" ng-click="chooseExamCountDropdown($index,'2')">2</a></li>
+	             <li><a href="" ng-click="chooseExamCountDropdown($index,'3')">3</a></li>
+	             <li><a href="" ng-click="chooseExamCountDropdown($index,'4')">4</a></li>
+	             <li><a href="" ng-click="chooseExamCountDropdown($index,'5')">5</a></li>
             </ul>
 	  </div>
 	</td>

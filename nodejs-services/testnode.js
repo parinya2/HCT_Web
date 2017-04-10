@@ -159,10 +159,7 @@ console.log('a='+startDate+'b='+endDate);
 
     var str = '';
     for (var i = 0; i < rows.length; i++) {
-      var courseName = '';
-      if (rows[i].course_type == '1') courseName = 'หลักสูตรสอนขับรถยนต์';
-      if (rows[i].course_type == '2') courseName = 'หลักสูตรสอนขับรถจักรยานยนต์';
-
+      var courseName = getCourseNameFromCourseType(rows[i].course_type + '');
       var examResultFlag = rows[i].exam_result ;
 
       var examResult = '';
@@ -349,9 +346,9 @@ app.post('/addStudentEnrol', function (req, res) {
 	  res.end('DUPLICATE');
 	} else {
 	  res.end('ERROR');
-	}       
+	}
       }
-  
+
       res.end('SUCCESS');
   });
   mariadbClient.end();
@@ -413,7 +410,7 @@ app.post('/searchStudentEnrol', function (req, res) {
 
       var courseName = getCourseNameFromCourseType(rows[i].course_type + '');
 
-      var tmp = '{' + 
+      var tmp = '{' +
 		'"Fullname":' + '"' + rows[i].fullname + '",' +
 		'"CitizenID":' + '"' + rows[i].citizen_id + '",' +
 		'"CourseName":' + '"' + courseName + '",' +
@@ -434,6 +431,7 @@ app.post('/searchStudentEnrol', function (req, res) {
 });
 
 function getCourseNameFromCourseType(courseType) {
-  if (courseType == '1')  return "Car Course";
-  if (courseType == '2')  return "Motorcycle Course";
+  if (courseType == '1')  return "หลักสูตรสอนขับรถยนต์";
+  if (courseType == '2')  return "หลักสูตรสอนขับรถจักรยานยนต์";
+  return '';
 }
