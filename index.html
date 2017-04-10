@@ -36,17 +36,18 @@
 </head>
 <body ng-app="hctApp">
 
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default" role="navigation">
   <div class="container-fluid">
     <div class="navbar-header">
       <!--<a class="navbar-brand" href="#">Chappters GPS</a>-->
-      <img src="/images/dlt_logo.png" alt="" width="50" height="50">
+      <!-- <img src="/images/dlt_logo.png" alt="" width="50" height="50"> -->
     </div>
     <div ng-controller="NavBarController">
       <ul class="nav navbar-nav">
         <li><p id="schoolNameText" class="navbar-text"></p></li>
-        <!--<li id="menu0" onclick="selectMenu(0)"><a href="#/home">HomePage</a></li>-->
-        <!--<li id="menu1" onclick="selectMenu(1)"><a href="#/report">ReportPage</a></li>-->
+        <li><p style="width:30px;" class="navbar-text">&nbsp;</p></li>
+        <li id="menu0" onclick="selectMenu(0)"><a href="#/home">HomePage</a></li>
+        <li id="menu1" onclick="selectMenu(1)"><a href="#/report">ReportPage</a></li>
         <!--<li id="menu4" onclick="selectMenu(2)"><a href="#/setting">SettingPage</a></li>-->
       </ul>
       <ul class="nav navbar-nav navbar-right">

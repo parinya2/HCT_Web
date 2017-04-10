@@ -322,3 +322,118 @@ app.post('/createUser', function (req, res) {
     mariadbClient.end();
   });
 });
+
+app.post('/addStudentEnrol', function (req, res) {
+
+  var fullname = req.body.fullname;
+  var citizenId = req.body.citizenId;
+  var courseType = req.body.courseType;
+  var enrolDate = req.body.enrolDate;
+
+  var newEnrolDate = "";
+  if (enrolDate.indexOf('/') > -1) {
+    var tmpArr = enrolDate.split('/');
+    if (tmpArr.length == 3) {
+      newEnrolDate = tmpArr[2] + '-' + tmpArr[1] + '-' + tmpArr[0] + " 00:00:01";
+    }
+  }
+
+  mariadbClient.query('INSERT INTO student_enrol (fullname, citizen_id, course_type, enrol_date, exam_count)' +
+            ' VALUES (:param1, :param2, :param3, :param4, :param5)',
+            {param1: fullname, param2: citizenId, param3: courseType, param4: newEnrolDate, param5:0},
+            function(err, rows) {
+      if (err) {
+	var errorMsg = err.message + "";
+	console.log("studentEnrol error = " + errorMsg);
+	if(errorMsg.indexOf("Duplicate") > -1) {
+	  res.end('DUPLICATE');
+	} else {
+	  res.end('ERROR');
+	}       
+      }
+  
+      res.end('SUCCESS');
+  });
+  mariadbClient.end();
+
+});
+
+app.post('/updateStudentEnrol', function (req, res) {
+  var citizenId = req.body.citizenId;
+  var courseType = req.body.courseType;
+  var examCount = req.body.examCount;
+  mariadbClient.query('UPDATE student_enrol SET exam_count = :param1 WHERE citizen_id=:param2 AND course_type=:param3',
+            {param1: examCount, param2: citizenId, param3: courseType},
+            function(err, rows) {
+      if (err) {
+	throw err;
+      }
+
+      res.end('SUCCESS');
+  });
+  mariadbClient.end();
+});
+
+app.post('/deleteStudentEnrol', function (req, res) {
+  var citizenId = req.body.citizenId;
+  var courseType = req.body.courseType;
+  mariadbClient.query('DELETE FROM student_enrol WHERE citizen_id=:param1 AND course_type=:param2',
+            {param1: citizenId, param2: courseType},
+            function(err, rows) {
+      res.end('SUCCESS');
+  });
+  mariadbClient.end();
+});
+
+app.post('/searchStudentEnrol', function (req, res) {
+  var citizenId = req.body.citizenId;
+  var courseType = req.body.courseType;
+
+  var extendedSQL = ' AND 1=1';
+  if (courseType == '1') extendedSQL = ' AND course_type = "1"';
+  if (courseType == '2') extendedSQL = ' AND course_type = "2"';
+
+  var str = '';
+
+  mariadbClient.query('SELECT * FROM student_enrol WHERE citizen_id = :param1' + extendedSQL,
+            {param1: citizenId},
+            function(err, rows) {
+    for (var i = 0; i < rows.length; i++) {
+      var rawEnrolDate = '' + rows[i].enrol_date;
+      var enrolDate = '';
+      if (rawEnrolDate.length > 0) {
+	var tmpArr1 = rawEnrolDate.split(' ');
+	if (tmpArr1.length == 2) {
+	  var dateStr = tmpArr1[0];
+	  var tmpArr2 = dateStr.split('-');
+	  dateStr = tmpArr2[2] + '/' + tmpArr2[1] + '/' + tmpArr2[0];
+	  enrolDate = dateStr;
+	}
+      }
+
+      var courseName = getCourseNameFromCourseType(rows[i].course_type + '');
+
+      var tmp = '{' + 
+		'"Fullname":' + '"' + rows[i].fullname + '",' +
+		'"CitizenID":' + '"' + rows[i].citizen_id + '",' +
+		'"CourseName":' + '"' + courseName + '",' +
+		'"CourseType":' + '"' + rows[i].course_type + '",' +
+		'"EnrolDate":' + '"' + enrolDate + '",' +
+		'"ExamCount":' + '"' + rows[i].exam_count + '"' +
+		'}';
+      str += tmp;
+      if (i != rows.length - 1) {
+	str += ',';
+      }
+    }
+
+    str = '[' + str + ']';
+    res.end(str);
+  });
+  mariadbClient.end();
+});
+
+function getCourseNameFromCourseType(courseType) {
+  if (courseType == '1')  return "Car Course";
+  if (courseType == '2')  return "Motorcycle Course";
+}

@@ -241,8 +241,103 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
         });
     };
   })
-  .controller('ReportController', function($scope) {
-    $scope.message = 'This is ReportController';
+  .controller('ReportController', function($scope, $http) {
+    $scope.chooseStudentEnrolCourseDropdown = function(text, index) {
+      jQuery('#studentEnrolCourseDropdownText').text(text);
+      jQuery('#studentEnrolCourseDropdownIndex').text(index);
+    }
+
+    $scope.chooseExamCountDropdown = function(rowIndex, examCount) {
+      jQuery('#studentExamCountDropdownText'+rowIndex).text(examCount);
+    }
+
+    $scope.updateStudentEnrol = function(citizenId, courseType, rowIndex) {
+      var examCount = jQuery('#studentExamCountDropdownText'+rowIndex).text();
+      waitingDialog.show('Please wait...');
+      setTimeout(function(){
+	$http.post(globalNodeServicesPrefix + "/updateStudentEnrol", {citizenId:citizenId, courseType:courseType, examCount:examCount})
+	  .success(function(studentEnrolResponse) {
+	    waitingDialog.hide();
+	    alert("Update Success");
+	  })
+      }, 2000);
+    }
+
+    $scope.deleteStudentEnrol = function(citizenId, courseType, rowIndex) {
+      var r = confirm("Are you sure to delete ?");
+      if (r == false) {
+        return;
+      }
+
+      waitingDialog.show('Please wait...');
+      setTimeout(function(){
+	$http.post(globalNodeServicesPrefix + "/deleteStudentEnrol", {citizenId:citizenId, courseType:courseType})
+	  .success(function(studentEnrolResponse) {
+	    document.getElementById('studentEnrolTable').deleteRow(rowIndex + 1);
+	    waitingDialog.hide();
+	  })
+      }, 2000);
+    }
+
+    $scope.searchStudentEnrol = function() {
+      var citizenId = jQuery('#searchCitizenIdText').val();
+
+      if (citizenId.length == 0) {
+	alert("Please fill all information");
+	return;
+      }
+
+      waitingDialog.show('Please wait...');
+      setTimeout(function(){
+	$http.post(globalNodeServicesPrefix + "/searchStudentEnrol", {citizenId:citizenId})
+	  .success(function(studentEnrolResponse) {
+	    $scope.studentEnrolData = studentEnrolResponse;
+	    var tmpArray = $scope.studentEnrolData;
+ 
+	    waitingDialog.hide();
+	  })
+      }, 2000);
+    }
+
+    $scope.saveStudentEnrol = function() {
+      var citizenId = jQuery('#citizenIdText').val();
+      var fullname = jQuery('#fullnameText').val();
+      var courseType = jQuery('#studentEnrolCourseDropdownIndex').text();
+      var enrolDate = jQuery('#studentEnrolDateText').val();
+
+      if (citizenId.length == 0 || fullname.length == 0 || enrolDate.length == 0) {
+	alert("Please fill all information");
+	return;
+      }
+
+      waitingDialog.show('Please wait...');
+      
+      setTimeout(function(){
+	$http.post(globalNodeServicesPrefix + "/addStudentEnrol", {fullname:fullname, citizenId:citizenId, courseType:courseType, enrolDate:enrolDate})
+	  .success(function(data, status, headers, config) {
+	    waitingDialog.hide();
+	    if (data == "SUCCESS") {
+	      alert("zAdd Success");
+	    } else if (data == "DUPLICATE") {
+	      alert("zDuplicate Enrol");
+	    } else if (data == "ERROR") {
+	      alert("Something Wrong");
+	    }
+            jQuery('#citizenIdText').val('');
+            jQuery('#fullnameText').val('');
+	  })
+	  .error(function (data, status, headers, config) {
+	  });
+      }, 2000);
+    }
+
+    jQuery(function () {
+      jQuery('#studentEnrolDateTimePicker').datetimepicker({
+	locale: 'th',
+	format: 'DD/MM/YYYY',
+	defaultDate: new Date()
+      });
+    });
   })
   .controller('SettingController', function($scope) {
     $scope.message = 'This is SettingController';
