@@ -1,49 +1,49 @@
 
 <div class="container" style="width:100%; float:left;">
   <div style="float:left; width:100%; text-align:center; font-size:36px; padding:10px;">
-     Register New Students 
+     บันทึกการสมัครเรียน
   </div>
 
   <div class="container">
-    <div style="float:left; width:10%;"> &nbsp; </div>    
+    <div style="float:left; width:10%;"> &nbsp; </div>
     <div style="float:left; width:200px; text-align:center; padding:7px;">
-      Citizen ID / Passport No
+      หมายเลขบัตร ปชช. / Passport
     </div>
     <div style="float:left; width:200px;">
       <div class="form-group">
         <input id="citizenIdText" type="text" class="form-control" />
       </div>
     </div>
-    <div style="float:left; width:50px;"> &nbsp; </div>    
+    <div style="float:left; width:50px;"> &nbsp; </div>
     <div style="float:left; width:100px; text-align:center; padding:7px;">
-      Fullname
+      ชื่อ-นามสกุล
     </div>
     <div style="float:left; width:200px;">
       <div class="form-group">
         <input id="fullnameText" type="text" class="form-control" />
       </div>
-    </div>    
+    </div>
   </div>
 
   <div class="container">
-    <div style="float:left; width:10%;"> &nbsp; </div>    
+    <div style="float:left; width:10%;"> &nbsp; </div>
     <div style="float:left; width:200px; text-align:center; padding:7px;">
-      Course
-    </div>    
+      หลักสูตรที่สมัครเรียน
+    </div>
     <div class="dropdown btn-group" style="float:left;">
       <button class="btn btn-default dropdown-toggle" style="width:200px" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <span id="studentEnrolCourseDropdownText"> Car Course </span>
+        <span id="studentEnrolCourseDropdownText"> หลักสูตรสอนขับรถยนต์ </span>
 	<span class="th-td-hidden" id="studentEnrolCourseDropdownIndex">1</span>
 	<span class="caret"></span>
       </button>
       <ul class="dropdown-menu" style="width:200px;" aria-labelledby="dropdownMenu2">
-	<li><a href="" ng-click="chooseStudentEnrolCourseDropdown('Car Course','1')">Car Course</a></li>
-	<li><a href="" ng-click="chooseStudentEnrolCourseDropdown('Motorcycle Course','2')">Motorcycle Course</a></li>
+	<li><a href="" ng-click="chooseStudentEnrolCourseDropdown('หลักสูตรสอนขับรถยนต์','1')">หลักสูตรสอนขับรถยนต์</a></li>
+	<li><a href="" ng-click="chooseStudentEnrolCourseDropdown('หลักสูตรสอนขับรถจักรยานยนต์','2')">หลักสูตรสอนขับรถจักรยานยนต์</a></li>
       </ul>
-    </div>   
-    <div style="float:left; width:50px;"> &nbsp; </div>    
+    </div>
+    <div style="float:left; width:50px;"> &nbsp; </div>
     <div style="float:left; width:100px; text-align:center; padding:7px;">
-      Register Date
+      วันที่สมัครเรียน
     </div>
     <div style="float:left; width:200px;">
       <div class="form-group">
@@ -54,45 +54,45 @@
 	  </span>
 	</div>
       </div>
-    </div>   
+    </div>
   </div>
 
   <div class="col-md-12 text-center" >
-      <button type="button" class="btn btn-success" ng-click="saveStudentEnrol()"> Save </button>
+      <button type="button" class="btn btn-success" ng-click="saveStudentEnrol()"> บันทึก </button>
   </div>
 
   <div style="float:left; width:100%; height:20px;" />
-  
+
   <div style="float:left; width:100%; height:2px; text-align:center; background-color:black;" />
 
   <div style="float:left; width:100%; text-align:center; font-size:36px; padding:10px;">
-    Search Student
+    ค้นหานักเรียน
   </div>
 
   <div class="container>"
-    <div style="float:left; width:20%;"> &nbsp; </div>    
+    <div style="float:left; width:20%;"> &nbsp; </div>
     <div style="float:left; width:200px; text-align:center; padding:7px;">
-      Citizen ID / Passport No	
+      หมายเลขบัตร ปชช. / Passport
     </div>
     <div style="float:left; width:180px;">
       <div class="form-group">
         <input id="searchCitizenIdText" type="text" class="form-control" />
       </div>
     </div>
-    <div style="float:left; width:50px;"> &nbsp; </div>    
+    <div style="float:left; width:50px;"> &nbsp; </div>
     <div style="float:left; width:50px;">
-      <button type="button" class="btn btn-primary" ng-click="searchStudentEnrol()"> Search </button>
+      <button type="button" class="btn btn-primary" ng-click="searchStudentEnrol()"> ค้นหา </button>
     </div>
   </div>
 
   <table id="studentEnrolTable" style="width:90%; float:none; margin:auto;" class="table table-responsive table-hover table-center-header">
     <thead>
       <tr>
-	<th>Fullname</th>
-	<th>Citizen ID / Passport ID</th>
-	<th>Course Name</th>
-	<th>Registered Date</th>
-	<th>Exam Count</th>
+	<th>ชื่อ-นามสกุล</th>
+	<th>หมายเลขบัตร ปชช. / Passport</th>
+	<th>หลักสูตรที่สมัครเรียน</th>
+	<th>วันที่สมัครเรียน</th>
+	<th>สอบแล้วกี่ครั้ง</th>
 	<th></th>
 	<th></th>
       </tr>
@@ -120,10 +120,10 @@
 	  </div>
 	</td>
 	<td class="td-align-center">
-	  <button type="button" class="btn btn-success" ng-click="updateStudentEnrol(data.CitizenID, data.CourseType, $index)">Save</button>
+	  <button type="button" class="btn btn-success" ng-click="updateStudentEnrol(data.CitizenID, data.CourseType, $index)">บันทึก</button>
 	</td>
 	<td class="td-align-center">
-	  <button type="button" class="btn btn-danger" ng-click="deleteStudentEnrol(data.CitizenID, data.CourseType, $index)">Delete</button>
+	  <button type="button" class="btn btn-danger" ng-click="deleteStudentEnrol(data.CitizenID, data.CourseType, $index)">ลบ</button>
 	</td>
       </tr>
     </tbody>

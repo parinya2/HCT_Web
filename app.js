@@ -253,23 +253,23 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 
     $scope.updateStudentEnrol = function(citizenId, courseType, rowIndex) {
       var examCount = jQuery('#studentExamCountDropdownText'+rowIndex).text();
-      waitingDialog.show('Please wait...');
+      waitingDialog.show('กรุณารอสักครู่...');
       setTimeout(function(){
 	$http.post(globalNodeServicesPrefix + "/updateStudentEnrol", {citizenId:citizenId, courseType:courseType, examCount:examCount})
 	  .success(function(studentEnrolResponse) {
 	    waitingDialog.hide();
-	    alert("Update Success");
+	    alert("บันทึกข้อมูลสำเร็จแล้ว");
 	  })
       }, 2000);
     }
 
     $scope.deleteStudentEnrol = function(citizenId, courseType, rowIndex) {
-      var r = confirm("Are you sure to delete ?");
+      var r = confirm("คุณต้องการลบข้อมูลนี้ ใช่หรือไม่ ?");
       if (r == false) {
         return;
       }
 
-      waitingDialog.show('Please wait...');
+      waitingDialog.show('กรุณารอสักครู่...');
       setTimeout(function(){
 	$http.post(globalNodeServicesPrefix + "/deleteStudentEnrol", {citizenId:citizenId, courseType:courseType})
 	  .success(function(studentEnrolResponse) {
@@ -283,17 +283,15 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       var citizenId = jQuery('#searchCitizenIdText').val();
 
       if (citizenId.length == 0) {
-	alert("Please fill all information");
-	return;
+	      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+	      return;
       }
 
-      waitingDialog.show('Please wait...');
+      waitingDialog.show('กรุณารอสักครู่...');
       setTimeout(function(){
 	$http.post(globalNodeServicesPrefix + "/searchStudentEnrol", {citizenId:citizenId})
 	  .success(function(studentEnrolResponse) {
 	    $scope.studentEnrolData = studentEnrolResponse;
-	    var tmpArray = $scope.studentEnrolData;
- 
 	    waitingDialog.hide();
 	  })
       }, 2000);
@@ -306,22 +304,22 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       var enrolDate = jQuery('#studentEnrolDateText').val();
 
       if (citizenId.length == 0 || fullname.length == 0 || enrolDate.length == 0) {
-	alert("Please fill all information");
-	return;
+	      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+	      return;
       }
 
-      waitingDialog.show('Please wait...');
-      
+      waitingDialog.show('กรุณารอสักครู่...');
+
       setTimeout(function(){
 	$http.post(globalNodeServicesPrefix + "/addStudentEnrol", {fullname:fullname, citizenId:citizenId, courseType:courseType, enrolDate:enrolDate})
 	  .success(function(data, status, headers, config) {
 	    waitingDialog.hide();
 	    if (data == "SUCCESS") {
-	      alert("zAdd Success");
+	      alert("บันทึกข้อมูลสำเร็จแล้ว");
 	    } else if (data == "DUPLICATE") {
-	      alert("zDuplicate Enrol");
+	      alert("ไม่สามารถบันทึกข้อมูลได้ เนื่องจากมีข้อมูลนี้อยู่แล้ว");
 	    } else if (data == "ERROR") {
-	      alert("Something Wrong");
+	      alert("เกิดข้อผิดพลาดบางอย่าง กรุณาติดต่อผู้ดูแลระบบ");
 	    }
             jQuery('#citizenIdText').val('');
             jQuery('#fullnameText').val('');
