@@ -385,6 +385,18 @@ app.post('/deleteStudentEnrol', function (req, res) {
 app.post('/searchStudentEnrol', function (req, res) {
   var citizenId = req.body.citizenId;
   var courseType = req.body.courseType;
+  var enrolDate = req.body.enrolDate;
+
+  var newEnrolDate = "";
+  if (enrolDate != undefined && enrolDate.indexOf('/') > -1) {
+    var tmpArr = enrolDate.split('/');
+    if (tmpArr.length == 3) {
+      newEnrolDate = tmpArr[2] + '-' + tmpArr[1] + '-' + tmpArr[0] + " 00:00:01";
+    }
+  }
+
+  var param1Str = newEnrolDate.length > 0 ? newEnrolDate : citizenId;
+  var targetColName = newEnrolDate.length > 0 ? 'enrol_date' : 'citizen_id';
 
   var extendedSQL = ' AND 1=1';
   if (courseType == '1') extendedSQL = ' AND course_type = "1"';
@@ -392,8 +404,8 @@ app.post('/searchStudentEnrol', function (req, res) {
 
   var str = '';
 
-  mariadbClient.query('SELECT * FROM student_enrol WHERE citizen_id = :param1' + extendedSQL,
-            {param1: citizenId},
+  mariadbClient.query('SELECT * FROM student_enrol WHERE ' + targetColName  +' =:param1' + extendedSQL,
+            {param1: param1Str},
             function(err, rows) {
     for (var i = 0; i < rows.length; i++) {
       var rawEnrolDate = '' + rows[i].enrol_date;

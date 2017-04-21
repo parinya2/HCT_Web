@@ -279,17 +279,27 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       }, 2000);
     }
 
-    $scope.searchStudentEnrol = function() {
-      var citizenId = jQuery('#searchCitizenIdText').val();
+    $scope.searchStudentEnrol = function(mode) {
+      var citizenId = '';
+      var enrolDate = '';
 
-      if (citizenId.length == 0) {
-	      alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-	      return;
+      if (mode == 1)
+      {
+        citizenId = jQuery('#searchCitizenIdText').val().trim();
+        if (citizenId.length == 0) {
+	        alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+	        return;
+        }
+      }
+
+      if (mode == 2)
+      {
+        enrolDate = jQuery('#studentEnrolDateText2').val();
       }
 
       waitingDialog.show('กรุณารอสักครู่...');
       setTimeout(function(){
-	$http.post(globalNodeServicesPrefix + "/searchStudentEnrol", {citizenId:citizenId})
+	$http.post(globalNodeServicesPrefix + "/searchStudentEnrol", {citizenId:citizenId, enrolDate:enrolDate})
 	  .success(function(studentEnrolResponse) {
 	    $scope.studentEnrolData = studentEnrolResponse;
 	    waitingDialog.hide();
@@ -298,7 +308,7 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
     }
 
     $scope.saveStudentEnrol = function() {
-      var citizenId = jQuery('#citizenIdText').val();
+      var citizenId = jQuery('#citizenIdText').val().trim();
       var fullname = jQuery('#fullnameText').val();
       var courseType = jQuery('#studentEnrolCourseDropdownIndex').text();
       var enrolDate = jQuery('#studentEnrolDateText').val();
@@ -331,6 +341,11 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 
     jQuery(function () {
       jQuery('#studentEnrolDateTimePicker').datetimepicker({
+	locale: 'th',
+	format: 'DD/MM/YYYY',
+	defaultDate: new Date()
+      });
+      jQuery('#studentEnrolDateTimePicker2').datetimepicker({
 	locale: 'th',
 	format: 'DD/MM/YYYY',
 	defaultDate: new Date()
