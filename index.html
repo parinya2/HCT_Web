@@ -43,7 +43,7 @@
       <!-- <img src="/images/dlt_logo.png" alt="" width="50" height="50"> -->
     </div>
     <div ng-controller="NavBarController">
-      <ul class="nav navbar-nav">
+      <ul id="headMenu" class="nav navbar-nav">
         <li><p id="schoolNameText" class="navbar-text"></p></li>
         <li><p style="width:30px;" class="navbar-text">&nbsp;</p></li>
         <li id="menu0" onclick="selectMenu(0)"><a href="#/home">ค้นหาผลการสอบ</a></li>
@@ -147,6 +147,11 @@
    if (shouldRedirect) {
       sessionStorage.clear();
       window.location.href = './login.html';
+   }
+
+   if (schoolAbbr == 'dlt')
+   {
+     document.getElementById("headMenu").children[3].style.display = "none";
    }
 
    getSchoolDetail(targetSchoolAbbr);
