@@ -281,7 +281,8 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 
     $scope.searchStudentEnrol = function(mode) {
       var citizenId = '';
-      var enrolDate = '';
+      var enrolDateFrom = '';
+      var enrolDateTo = '';
 
       if (mode == 1)
       {
@@ -294,16 +295,17 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 
       if (mode == 2)
       {
-        enrolDate = jQuery('#studentEnrolDateText2').val();
+        enrolDateFrom = jQuery('#studentEnrolDateText2').val();
+        enrolDateTo = jQuery('#studentEnrolDateText3').val();
       }
 
       waitingDialog.show('กรุณารอสักครู่...');
       setTimeout(function(){
-	$http.post(globalNodeServicesPrefix + "/searchStudentEnrol", {citizenId:citizenId, enrolDate:enrolDate})
-	  .success(function(studentEnrolResponse) {
-	    $scope.studentEnrolData = studentEnrolResponse;
-	    waitingDialog.hide();
-	  })
+    	$http.post(globalNodeServicesPrefix + "/searchStudentEnrol", {citizenId:citizenId, enrolDateFrom:enrolDateFrom, enrolDateTo:enrolDateTo})
+    	  .success(function(studentEnrolResponse) {
+    	    $scope.studentEnrolData = studentEnrolResponse;
+    	    waitingDialog.hide();
+    	  })
       }, 2000);
     }
 
@@ -341,14 +343,26 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 
     jQuery(function () {
       jQuery('#studentEnrolDateTimePicker').datetimepicker({
-	locale: 'th',
-	format: 'DD/MM/YYYY',
-	defaultDate: new Date()
+      	locale: 'th',
+      	format: 'DD/MM/YYYY',
+      	defaultDate: new Date()
       });
       jQuery('#studentEnrolDateTimePicker2').datetimepicker({
-	locale: 'th',
-	format: 'DD/MM/YYYY',
-	defaultDate: new Date()
+      	locale: 'th',
+      	format: 'DD/MM/YYYY',
+      	defaultDate: new Date()
+      });
+      jQuery('#studentEnrolDateTimePicker3').datetimepicker({
+        locale: 'th',
+        format: 'DD/MM/YYYY',
+        defaultDate: new Date()
+      });
+
+      jQuery("#studentEnrolDateTimePicker2").on("dp.change",function (e) {
+          jQuery('#studentEnrolDateTimePicker3').data("DateTimePicker").minDate(e.date);
+      });
+      jQuery("#studentEnrolDateTimePicker3").on("dp.change",function (e) {
+          jQuery('#studentEnrolDateTimePicker2').data("DateTimePicker").maxDate(e.date);
       });
     });
   })

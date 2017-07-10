@@ -385,39 +385,52 @@ app.post('/deleteStudentEnrol', function (req, res) {
 app.post('/searchStudentEnrol', function (req, res) {
   var citizenId = req.body.citizenId;
   var courseType = req.body.courseType;
-  var enrolDate = req.body.enrolDate;
+  var enrolDateFrom = req.body.enrolDateFrom;
+  var enrolDateTo = req.body.enrolDateTo;
 
-  var newEnrolDate = "";
-  if (enrolDate != undefined && enrolDate.indexOf('/') > -1) {
-    var tmpArr = enrolDate.split('/');
+  var newEnrolDateFrom = "1970-01-01 00:00:01";
+  var newEnrolDateTo = "9999-01-01 23:59:59";
+
+  if (enrolDateFrom != undefined && enrolDateFrom.indexOf('/') > -1) {
+    var tmpArr = enrolDateFrom.split('/');
     if (tmpArr.length == 3) {
-      newEnrolDate = tmpArr[2] + '-' + tmpArr[1] + '-' + tmpArr[0] + " 00:00:01";
+      newEnrolDateFrom = tmpArr[2] + '-' + tmpArr[1] + '-' + tmpArr[0] + " 00:00:01";
+    }
+  }
+  if (enrolDateTo != undefined && enrolDateTo.indexOf('/') > -1) {
+    var tmpArr = enrolDateTo.split('/');
+    if (tmpArr.length == 3) {
+      newEnrolDateTo = tmpArr[2] + '-' + tmpArr[1] + '-' + tmpArr[0] + " 23:59:59";
     }
   }
 
-  var param1Str = newEnrolDate.length > 0 ? newEnrolDate : citizenId;
-  var targetColName = newEnrolDate.length > 0 ? 'enrol_date' : 'citizen_id';
+  var param3Str = citizenId.length > 0 ? citizenId : 'xxxxxxxxxxxx';
 
   var extendedSQL = ' AND 1=1';
-  if (courseType == '1') extendedSQL = ' AND course_type = "1"';
-  if (courseType == '2') extendedSQL = ' AND course_type = "2"';
+  if (citizenId.length > 0)
+      extendedSQL = ' AND citizen_id = :param3';
+  else
+      extendedSQL = ' AND citizen_id <> :param3';
+
+  extendedSQL += ' ORDER BY enrol_date, course_type, citizen_id';
 
   var str = '';
 
-  mariadbClient.query('SELECT * FROM student_enrol WHERE ' + targetColName  +' =:param1' + extendedSQL,
-            {param1: param1Str},
+  mariadbClient.query('SELECT * FROM student_enrol WHERE enrol_date >= :param1 AND '
+                      + 'enrol_date <= :param2' + extendedSQL,
+                {param1: newEnrolDateFrom, param2: newEnrolDateTo, param3: param3Str},
             function(err, rows) {
     for (var i = 0; i < rows.length; i++) {
       var rawEnrolDate = '' + rows[i].enrol_date;
       var enrolDate = '';
       if (rawEnrolDate.length > 0) {
-	var tmpArr1 = rawEnrolDate.split(' ');
-	if (tmpArr1.length == 2) {
-	  var dateStr = tmpArr1[0];
-	  var tmpArr2 = dateStr.split('-');
-	  dateStr = tmpArr2[2] + '/' + tmpArr2[1] + '/' + tmpArr2[0];
-	  enrolDate = dateStr;
-	}
+      	var tmpArr1 = rawEnrolDate.split(' ');
+      	if (tmpArr1.length == 2) {
+      	  var dateStr = tmpArr1[0];
+      	  var tmpArr2 = dateStr.split('-');
+      	  dateStr = tmpArr2[2] + '/' + tmpArr2[1] + '/' + tmpArr2[0];
+      	  enrolDate = dateStr;
+      	}
       }
 
       var courseName = getCourseNameFromCourseType(rows[i].course_type + '');

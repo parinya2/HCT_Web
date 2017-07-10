@@ -47,12 +47,12 @@
     </div>
     <div style="float:left; width:200px;">
       <div class="form-group">
-	<div class="input-group date" id="studentEnrolDateTimePicker">
-	  <input id="studentEnrolDateText" type="text" class="form-control" />
-	  <span class="input-group-addon">
-	    <span class="glyphicon glyphicon-calendar"></span>
-	  </span>
-	</div>
+      	<div class="input-group date" id="studentEnrolDateTimePicker">
+      	  <input id="studentEnrolDateText" type="text" class="form-control" />
+      	  <span class="input-group-addon">
+      	    <span class="glyphicon glyphicon-calendar"></span>
+      	  </span>
+      	</div>
       </div>
     </div>
   </div>
@@ -70,11 +70,11 @@
   </div>
 
   <div class="container>"
-    <div style="float:left; width:10%;"> &nbsp; </div>
+    <div style="float:left; width:5%;"> &nbsp; </div>
     <div style="float:left; width:200px; text-align:center; padding:7px;">
       หมายเลขบัตร ปชช. / Passport
     </div>
-    <div style="float:left; width:180px;">
+    <div style="float:left; width:130px;">
       <div class="form-group">
         <input id="searchCitizenIdText" type="text" class="form-control" />
       </div>
@@ -83,17 +83,30 @@
     <div style="float:left; width:50px;">
       <button type="button" class="btn btn-primary" ng-click="searchStudentEnrol(1)"> ค้นหา </button>
     </div>
-    <div style="float:left; width:80px;"> &nbsp; </div>
-    <div style="float:left; width:100px; text-align:center; padding:7px;">
-      วันที่สมัครเรียน
+    <div style="float:left; width:30px;"> &nbsp; </div>
+    <div style="float:left; width:150px; text-align:center; padding:7px;">
+      วันที่สมัครเรียน ตั้งแต่
     </div>
-    <div style="float:left; width:200px;">
+    <div style="float:left; width:150px;">
       <div class="form-group">
-	<div class="input-group date" id="studentEnrolDateTimePicker2">
-	  <input id="studentEnrolDateText2" type="text" class="form-control" />
-	  <span class="input-group-addon">
-	    <span class="glyphicon glyphicon-calendar"></span>
-	  </span>
+      	<div class="input-group date" id="studentEnrolDateTimePicker2">
+      	  <input id="studentEnrolDateText2" type="text" class="form-control" />
+      	  <span class="input-group-addon">
+      	    <span class="glyphicon glyphicon-calendar"></span>
+      	  </span>
+        </div>
+      </div>
+    </div>
+    <div style="float:left; width:30px; text-align:center; padding:7px;">
+      ถึง
+    </div>
+    <div style="float:left; width:150px;">
+      <div class="form-group">
+        <div class="input-group date" id="studentEnrolDateTimePicker3">
+          <input id="studentEnrolDateText3" type="text" class="form-control" />
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </span>
         </div>
       </div>
     </div>
@@ -106,22 +119,24 @@
   <table id="studentEnrolTable" style="width:90%; float:none; margin:auto;" class="table table-responsive table-hover table-center-header">
     <thead>
       <tr>
-	<th>ชื่อ-นามสกุล</th>
-	<th>หมายเลขบัตร ปชช. / Passport</th>
-	<th>หลักสูตรที่สมัครเรียน</th>
-	<th>วันที่สมัครเรียน</th>
-	<th>สอบแล้วกี่ครั้ง</th>
-	<th></th>
-	<th></th>
+        <th>ลำดับ</th>
+      	<th>ชื่อ-นามสกุล</th>
+      	<th>หมายเลขบัตร ปชช. / Passport</th>
+      	<th>หลักสูตรที่สมัครเรียน</th>
+      	<th>วันที่สมัครเรียน</th>
+      	<th>สอบแล้วกี่ครั้ง</th>
+      	<th></th>
+      	<th></th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="data in studentEnrolData">
-	<td style="vertical-align:middle;" class="td-align-center">{{data.Fullname}}</td>
-	<td style="vertical-align:middle;" class="td-align-center">{{data.CitizenID}}</td>
-	<td style="vertical-align:middle;" class="td-align-center">{{data.CourseName}}</td>
-	<td style="vertical-align:middle;" class="td-align-center">{{data.EnrolDate}}</td>
-	<td class="td-align-center">
+        <td style="vertical-align:middle;" class="td-align-center">{{$index + 1}}</td>
+      	<td style="vertical-align:middle;" class="td-align-center">{{data.Fullname}}</td>
+      	<td style="vertical-align:middle;" class="td-align-center">{{data.CitizenID}}</td>
+      	<td style="vertical-align:middle;" class="td-align-center">{{data.CourseName}}</td>
+      	<td style="vertical-align:middle;" class="td-align-center">{{data.EnrolDate}}</td>
+      	<td class="td-align-center">
     	  <div class="dropdown btn-group">
             <button class="btn btn-default dropdown-toggle" style="width:50px" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
               <span id="studentExamCountDropdownText{{$index}}">{{data.ExamCount}} </span>
