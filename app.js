@@ -9,9 +9,11 @@ function getSchoolDetail(schoolAbbr) {
                   if (tmpArray.length > 0) {
                     var obj = tmpArray[0];
                     var schoolFullName = obj['SchoolFullName'];
+                    var schoolFullNameThai = obj['SchoolFullNameThai'];
                     var schoolCertNo = obj['SchoolCertNo'];
                     jQuery("#schoolNameText").text(schoolFullName);
                     sessionStorage.setItem('targetSchoolCertNo', schoolCertNo);
+                    sessionStorage.setItem('schoolFullNameThai', schoolFullNameThai);
                 }
               });
 }
@@ -41,6 +43,7 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       var failExamCount = reportDict['failExamCount'];
       var notCompleteExamCount = reportDict['notCompleteExamCount'];
       var schoolFullName = jQuery("#schoolNameText").text();
+      var schoolFullNameThai = sessionStorage.getItem('schoolFullNameThai');
 
       var reportTable = {
           table: {
@@ -58,26 +61,92 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
         }
       };
 
+      var extraTabStr1 = ' \t\t\t\t\t\t\t';
+      var extraTabStr2 = ' \t\t\t\t\t\t\t';
+      var extraTabStr3 = '  \t\t';
+      var extraTabStr4 = ' \t\t\t\t\t';
+      var extraTabStr5 = '          \t\t\t\t\t\t\t';
+
+      var examReportStr = '';
+
+      startDateText = getDateStringThaiFormat(startDateText);
+      endDateText = getDateStringThaiFormat(endDateText);
+
+      if (startDateText != '-' && endDateText != '-' &&
+          startDateText == endDateText)
+      {
+   	     examReportStr = 'รายงานผลการสอบ ประจำวันที่ ' + startDateText;
+      }
+      else
+      {
+	       examReportStr = 'รายงานผลการสอบ ตั้งแต่วันที่ ' + startDateText + ' ถึงวันที่ ' + endDateText;
+      }
+
       var dd = {
           defaultStyle: {font:'myFont'},
           pageOrientation: 'landscape',
           content: [
               { text: ' ', style: 'header' },
-              { text: schoolFullName, style: 'header' },
+              { text: schoolFullNameThai, fontSize: 30, alignment: 'center' },
+              { text: schoolFullName, fontSize: 25, alignment: 'center' },
               { text: ' ', style: 'header' },
-              { text: 'รายงานผลการสอบ ตั้งแต่วันที่ ' + startDateText + ' ถึงวันที่ ' + endDateText, style: 'header' },
-              { text: 'สอบผ่าน จำนวน ' + passExamCount + ' คน', style: 'header' },
-              { text: 'สอบไม่ผ่าน จำนวน ' + failExamCount + ' คน', style: 'header' },
-              { text: 'ทำข้อสอบไม่เสร็จ จำนวน ' + notCompleteExamCount + ' คน', style: 'header' },
+              { text: examReportStr, fontSize: 25, alignment: 'center' },
               { text: ' ', style: 'header' },
-              reportTable
+              reportTable,
+              { text: ' ', style: 'header' },
+              { text: '\t\t สรุปผลการสอบ', fontSize: 22, bold: true },
+              { text: '\t\t\t สอบผ่าน' + extraTabStr1 + passExamCount + ' คน', fontSize: 20 },
+              { text: '\t\t\t สอบไม่ผ่าน' + extraTabStr2 + failExamCount + ' คน', fontSize: 20 },
+              { text: '\t\t\t ทำข้อสอบไม่เสร็จ' + extraTabStr3 + notCompleteExamCount + ' คน', fontSize: 20 },
+              { text: ' ', style: 'header' },
+              { text: ' ', style: 'header' },
+              { text: ' ', style: 'header' },
+              { text: '______________________' + extraTabStr4, fontSize: 22, alignment: 'right' },
+              { text: ' ', style: 'header' },
+              { text: '(____________________)' + extraTabStr4, fontSize: 22, alignment: 'right' },
+              { text: 'เจ้าหน้าที่คุมสอบ' + extraTabStr5, fontSize: 22,alignment: 'right' }
           ]
       }
       pdfMake.createPdf(dd).download('รายงานผลสอบ.pdf');
     }
 
     function getExamHistoryReportHeader() {
-      return ['ลำดับที่','ชื่อ-นามสกุล','เลขประจำตัวประชาชน','หลักสูตรที่เรียน','ผลการสอบ','วันที่สอบ','หมายเลขข้อสอบ','เวลาที่ใช้ (นาที)'];
+      return ['ลำดับที่','ชื่อ-นามสกุล','เลขประจำตัว\nประชาชน','หลักสูตรที่เรียน','ผลการสอบ\nเต็ม 50 คะแนน','วันที่สอบ','หมายเลข\nข้อสอบ','เวลาที่ใช้ (นาที)'];
+    }
+
+    function getDateStringThaiFormat(dateStr)
+    {
+      if (dateStr.length < 3)
+	return dateStr;
+
+      var tmpArr = dateStr.split('/');
+      if (tmpArr.length != 3)
+	return dateStr;
+
+      var day = tmpArr[0];
+      var month = parseInt(tmpArr[1]);
+      var year = parseInt(tmpArr[2]);
+
+      var newMonth = '';
+      switch(month)
+      {
+      	case 1: newMonth = 'มกราคม'; break;
+      	case 2: newMonth = 'กุมภาพันธ์'; break;
+      	case 3: newMonth = 'มีนาคม'; break;
+      	case 4: newMonth = 'เมษายน'; break;
+      	case 5: newMonth = 'พฤษภาคม'; break;
+      	case 6: newMonth = 'มิถุนายน'; break;
+      	case 7: newMonth = 'กรกฏาคม'; break;
+      	case 8: newMonth = 'สิงหาคม'; break;
+      	case 9: newMonth = 'กันยายน'; break;
+      	case 10: newMonth = 'ตุลาคม'; break;
+      	case 11: newMonth = 'พฤศจิกายน'; break;
+      	case 12: newMonth = 'ธันวาคม'; break;
+      }
+
+      var newYear = year < 2500 ? year + 543 : year;
+
+      return day + " " + newMonth + " " + newYear;
     }
 
     function getExamHistoryReportDict() {
@@ -104,7 +173,23 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
           {
             var value = obj[key];
             if (keyCount < 7) {
-              s.push(value);
+              if (key == 'ExamDatetime')
+	             {
+		               var tmpDatetimeArr = value.split(' ');
+		               if (tmpDatetimeArr.length > 1)
+		               {
+            		     var tmpDateArr = tmpDatetimeArr[0].split('/');
+            		     var year = parseInt(tmpDateArr[2]);
+            		     var thaiYear = year < 2500 ? year + 543 : year;
+            		     var newDateStr = tmpDateArr[0] + '/' + tmpDateArr[1] + '/' + thaiYear + ' ';
+            		     for (var k = 1; k < tmpDatetimeArr.length; k++)
+		               {
+			             newDateStr += tmpDatetimeArr[k];
+ 		          }
+		          value = newDateStr;
+		      }
+	      }
+	      s.push(value);
             }
             keyCount++;
 

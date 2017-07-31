@@ -164,9 +164,9 @@ console.log('a='+startDate+'b='+endDate);
 
       var examResult = '';
       if (rows[i].exam_result == 'Y')
-        examResult = 'สอบผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
+        examResult = rows[i].exam_score + ' คะแนน';
       else if (rows[i].exam_result == 'N')
-        examResult = 'สอบไม่ผ่าน (คะแนน ' + rows[i].exam_score + ' / 50)';
+        examResult = rows[i].exam_score + ' คะแนน';
       else if (rows[i].exam_result == 'X')
         examResult = 'ทำข้อสอบไม่เสร็จ';
       else
@@ -180,8 +180,9 @@ console.log('a='+startDate+'b='+endDate);
           var timeStr = tmpArr1[1];
           var dateStr = tmpArr1[0];
           var tmpArr2 = dateStr.split('-');
-          dateStr = tmpArr2[2] + '/' + tmpArr2[1] + '/' + tmpArr2[0];
-          exam_datetime = dateStr + ' เวลา ' + timeStr + ' น.';
+
+	  dateStr = tmpArr2[2] + '/' + tmpArr2[1] + '/' + tmpArr2[0];
+          exam_datetime = dateStr + ' ' + timeStr + ' น.';
         }
       }
 
@@ -287,7 +288,8 @@ app.post('/getSchoolDetail', function (req, res) {
       var tmp = '[ {' +
                 '"SchoolAbbr":' + '"' + rows[0].school_abbr + '",' +
                 '"SchoolCertNo":' + '"' + rows[0].school_cert_no + '",' +
-                '"SchoolFullName":' + '"' + rows[0].school_full_name + '"' +
+                '"SchoolFullName":' + '"' + rows[0].school_full_name + '",' +
+                '"SchoolFullNameThai":' + '"' + rows[0].school_full_name_thai + '"' +
                 '} ]';
       res.end(tmp);
     } else {
