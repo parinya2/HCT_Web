@@ -63,7 +63,7 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 
       var extraTabStr1 = ' \t\t\t\t\t\t\t';
       var extraTabStr2 = ' \t\t\t\t\t\t\t';
-      var extraTabStr3 = '  \t\t';
+      var extraTabStr3 = '  \t\t\t\t';
       var extraTabStr4 = ' \t\t\t\t\t';
       var extraTabStr5 = '          \t\t\t\t\t\t\t';
 
@@ -181,7 +181,7 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
             		     var tmpDateArr = tmpDatetimeArr[0].split('/');
             		     var year = parseInt(tmpDateArr[2]);
             		     var thaiYear = year < 2500 ? year + 543 : year;
-            		     var newDateStr = tmpDateArr[0] + '/' + tmpDateArr[1] + '/' + thaiYear + ' ';
+            		     var newDateStr = tmpDateArr[0] + '/' + tmpDateArr[1] + '/' + thaiYear + '      ';
             		     for (var k = 1; k < tmpDatetimeArr.length; k++)
 		               {
 			             newDateStr += tmpDatetimeArr[k];
@@ -336,12 +336,82 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       jQuery('#studentExamCountDropdownText'+rowIndex).text(examCount);
     }
 
+    $scope.incrementExamCount = function() {
+      var allCitizenIds = '';
+      var allCourseTypes = '';
+
+      var tmpArray = $scope.studentEnrolData;
+      if (tmpArray == null || tmpArray.length == 0)
+	return;
+
+       for (var i = 0; i < tmpArray.length; i++)
+      {
+	var obj = tmpArray[i];
+	for (var key in obj)
+        {
+          var value = obj[key];
+	  if (key == 'CitizenID')
+	  {
+	      allCitizenIds += value;
+	  }
+	  if (key == 'CourseType')
+	  {
+	      allCourseTypes += value;
+	  }
+	}
+
+	var delimiter = ',';
+	if (i != tmpArray.length - 1)
+	{
+	  allCitizenIds += delimiter;
+	  allCourseTypes += delimiter;
+	}
+      }
+
+      waitingDialog.show('กรุณารอสักครู่...');
+      setTimeout(function(){
+	$http.post(globalNodeServicesPrefix + "/incrementExamCount", {allCitizenIds: allCitizenIds, allCourseTypes: allCourseTypes})
+	  .success(function(studentEnrolResponse) {
+		var backUpArray = [];
+		for (var i = 0; i < $scope.studentEnrolData.length; i++)
+		{
+			var newObj = {};
+			var oldObj = $scope.studentEnrolData[i];
+			newObj["Fullname"] = oldObj["Fullname"];
+			newObj["CitizenID"] = oldObj["CitizenID"];
+			newObj["CourseType"] = oldObj["CourseType"];
+			newObj["CourseName"] = oldObj["CourseName"];
+			newObj["EnrolDate"] = oldObj["EnrolDate"];
+			newObj["ExamCount"] = parseInt(oldObj["ExamCount"]) + 1;
+			backUpArray.push(newObj);
+		}
+
+		for (var i = 0 ; i < backUpArray.length; i++)
+		{
+			$scope.studentEnrolData[i] = backUpArray[i];;
+		}
+ 	    waitingDialog.hide();
+	    alert("บันทึกข้อมูลสำเร็จแล้ว");
+	  })
+      }, 2000);
+    }
+
     $scope.updateStudentEnrol = function(citizenId, courseType, rowIndex) {
       var examCount = jQuery('#studentExamCountDropdownText'+rowIndex).text();
       waitingDialog.show('กรุณารอสักครู่...');
       setTimeout(function(){
 	$http.post(globalNodeServicesPrefix + "/updateStudentEnrol", {citizenId:citizenId, courseType:courseType, examCount:examCount})
 	  .success(function(studentEnrolResponse) {
+	    var oldObj = $scope.studentEnrolData[rowIndex];
+	    var newObj = {};
+            newObj["Fullname"] = oldObj["Fullname"];
+            newObj["CitizenID"] = oldObj["CitizenID"];
+            newObj["CourseType"] = oldObj["CourseType"];
+            newObj["CourseName"] = oldObj["CourseName"];
+            newObj["EnrolDate"] = oldObj["EnrolDate"];
+            newObj["ExamCount"] = examCount;
+	    $scope.studentEnrolData[rowIndex] = newObj;
+
 	    waitingDialog.hide();
 	    alert("บันทึกข้อมูลสำเร็จแล้ว");
 	  })
@@ -358,7 +428,15 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       setTimeout(function(){
 	$http.post(globalNodeServicesPrefix + "/deleteStudentEnrol", {citizenId:citizenId, courseType:courseType})
 	  .success(function(studentEnrolResponse) {
-	    document.getElementById('studentEnrolTable').deleteRow(rowIndex + 1);
+	    $scope.studentEnrolData.splice(rowIndex, 1);
+      if ($scope.studentEnrolData.length > 0)
+      {
+        document.getElementById('incrementExamCountButton').style.visibility = "visible";
+      }
+      else
+      {
+        document.getElementById('incrementExamCountButton').style.visibility = "hidden";
+      }
 	    waitingDialog.hide();
 	  })
       }, 2000);
@@ -389,6 +467,14 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
     	$http.post(globalNodeServicesPrefix + "/searchStudentEnrol", {citizenId:citizenId, enrolDateFrom:enrolDateFrom, enrolDateTo:enrolDateTo})
     	  .success(function(studentEnrolResponse) {
     	    $scope.studentEnrolData = studentEnrolResponse;
+	    if (studentEnrolResponse.length > 0)
+	    {
+	      document.getElementById('incrementExamCountButton').style.visibility = "visible";
+	    }
+	    else
+	    {
+	      document.getElementById('incrementExamCountButton').style.visibility = "hidden";
+	    }
     	    waitingDialog.hide();
     	  })
       }, 2000);

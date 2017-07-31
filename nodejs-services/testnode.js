@@ -357,6 +357,42 @@ app.post('/addStudentEnrol', function (req, res) {
 
 });
 
+app.post('/incrementExamCount', function (req, res) {
+  var allCitizenIds = req.body.allCitizenIds;
+  var allCourseTypes = req.body.allCourseTypes;
+
+  var delimiter = ',';
+  var citizenIdsArray = allCitizenIds.split(delimiter);
+  var courseTypesArray = allCourseTypes.split(delimiter);
+
+  if (citizenIdsArray.length == 0 ||
+      citizenIdsArray.length != courseTypesArray.length)
+	return;
+
+  var sqlStatement = '';
+  for (var i = 0; i < citizenIdsArray.length; i++)
+  {
+    var tmpCitizenId = citizenIdsArray[i];
+    var tmpCourseType = courseTypesArray[i];
+    sqlStatement += ' (citizen_id="' + tmpCitizenId + '" AND course_type="' + tmpCourseType + '"' + ') ';
+    
+    if (i < citizenIdsArray.length - 1)
+	sqlStatement += ' OR ';
+  }
+
+  var str = '';
+  mariadbClient.query('UPDATE student_enrol SET exam_count = exam_count + 1 WHERE ' + sqlStatement,
+            {},
+            function(err, rows) {
+      if (err) {
+	throw err;
+      }
+
+      res.end('SUCCESS');
+  });
+  mariadbClient.end();
+});
+
 app.post('/updateStudentEnrol', function (req, res) {
   var citizenId = req.body.citizenId;
   var courseType = req.body.courseType;
