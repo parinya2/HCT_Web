@@ -33,6 +33,75 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
       }, 2000);
     };
 
+    $scope.downloadExamHistoryExcel = function() {
+      var excelData = '';
+
+      var reportDict = getExamHistoryReportDict();
+      var resultArray = reportDict['resultArray'];
+      var startDateText = reportDict['startDateText'];
+      var endDateText = reportDict['endDateText'];
+      var passExamCount = reportDict['passExamCount'];
+      var failExamCount = reportDict['failExamCount'];
+      var notCompleteExamCount = reportDict['notCompleteExamCount'];
+      var schoolFullName = jQuery("#schoolNameText").text();
+      var schoolFullNameThai = sessionStorage.getItem('schoolFullNameThai');
+
+      var examReportStr = '';
+
+      startDateText = getDateStringThaiFormat(startDateText);
+      endDateText = getDateStringThaiFormat(endDateText);
+
+      if (startDateText != '-' && endDateText != '-' &&
+          startDateText == endDateText)
+      {
+   	     examReportStr = 'รายงานผลการสอบ ประจำวันที่ ' + startDateText;
+      }
+      else
+      {
+	       examReportStr = 'รายงานผลการสอบ ตั้งแต่วันที่ ' + startDateText + ' ถึงวันที่ ' + endDateText;
+      }
+
+	var passExamCountLabel = 'สอบผ่าน';
+	var failExamCountLabel = 'สอบไม่ผ่าน';
+	var notCompleteExamCountLabel = 'ทำข้อสอบไม่เสร็จ';
+	var personLabel = 'คน';
+	var examStaffLabel = 'เจ้าหน้าที่คุมสอบ';
+
+	var newLine = '\n';
+	var sp = ',';
+	excelData += sp + sp + sp + schoolFullNameThai + newLine;
+	excelData += sp + sp + sp + schoolFullName + newLine;
+	excelData += newLine;
+	excelData += sp + sp + sp + examReportStr + newLine;
+	excelData += newLine;
+	for (var i = 0; i < resultArray.length; i++)
+	{
+	  var obj = resultArray[i];
+	  excelData += '"' + obj[0] + '"' + sp;
+	  excelData += '"' + obj[1] + '"' + sp;
+	  excelData += '"' + obj[2] + '"' + sp;
+	  excelData += '"' + obj[3] + '"' + sp;
+	  excelData += '"' + obj[4] + '"' + sp;
+	  excelData += '"' + obj[5] + '"' + sp;
+	  excelData += '"' + obj[6] + '"' + sp;
+	  excelData += '"' + obj[7] + '"' + newLine;
+	}
+	excelData += newLine;
+
+	excelData += sp + 'สรุปผลการสอบ' + newLine;
+	excelData += sp + sp + passExamCountLabel + sp + passExamCount + sp + personLabel + newLine;
+	excelData += sp + sp + failExamCountLabel + sp + failExamCount + sp + personLabel + newLine;
+	excelData += sp + sp + notCompleteExamCountLabel + sp + notCompleteExamCount + sp + personLabel + newLine;
+	excelData += newLine;
+	excelData += newLine;
+	excelData += sp + sp + sp + sp + sp + '_____________________' + newLine;
+	excelData += sp + sp + sp + sp + sp + '(____________________)' + newLine;
+	excelData += sp + sp + sp + sp + sp + examStaffLabel + newLine;
+
+window.open('data:text/csv;charset=utf-8;base64,' + window.btoa(unescape(encodeURIComponent(excelData))));
+//    window.open('data:application/vnd.ms-excel,' + excelData);
+ };
+
     $scope.downloadExamHistoryPDF = function() {
 
       var reportDict = getExamHistoryReportDict();
@@ -429,16 +498,16 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
 	$http.post(globalNodeServicesPrefix + "/deleteStudentEnrol", {citizenId:citizenId, courseType:courseType})
 	  .success(function(studentEnrolResponse) {
 	    $scope.studentEnrolData.splice(rowIndex, 1);
-      if ($scope.studentEnrolData.length > 0)
-      {
-        document.getElementById('incrementExamCountButton').style.visibility = "visible";
-      }
-      else
-      {
-        document.getElementById('incrementExamCountButton').style.visibility = "hidden";
-      }
-	    waitingDialog.hide();
-	  })
+        if ($scope.studentEnrolData.length > 0)
+        {
+          document.getElementById('incrementExamCountButton').style.visibility = "visible";
+        }
+        else
+        {
+          document.getElementById('incrementExamCountButton').style.visibility = "hidden";
+        }
+         waitingDialog.hide();
+        })
       }, 2000);
     }
 
