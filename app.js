@@ -585,6 +585,7 @@ window.open('data:text/csv;charset=utf-8;base64,' + window.btoa(unescape(encodeU
       jQuery('#studentEnrolDateTimePicker').datetimepicker({
       	locale: 'th',
       	format: 'DD/MM/YYYY',
+        ignoreReadonly: true,
       	defaultDate: new Date()
       });
       jQuery('#studentEnrolDateTimePicker2').datetimepicker({
