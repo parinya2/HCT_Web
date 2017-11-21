@@ -27,7 +27,22 @@ angular.module('hctApp', ['ngRoute','ngSanitize','ngCsv'])
           $http.get(globalNodeServicesPrefix + "/getExamResultPdf",
                    {params:{record_id:recordId}})
             .success(function(examResultPdfResponse) {
-              window.open('data:application/pdf;base64,' + examResultPdfResponse);
+              var objbuilder = '';
+              objbuilder += ('<object width="100%" height="100%"      data="data:application/pdf;base64,');
+              objbuilder += (examResultPdfResponse);
+              objbuilder += ('" type="application/pdf" class="internal">');
+              objbuilder += ('<embed src="data:application/pdf;base64,');
+              objbuilder += (examResultPdfResponse);
+              objbuilder += ('" type="application/pdf" />');
+              objbuilder += ('</object>');
+
+              var win = window.open("","_blank","titlebar=yes");
+              win.document.title = “Exam Result“;
+              win.document.write('<html><body>');
+              win.document.write(objbuilder);
+              win.document.write('</body></html>');
+              layer = jQuery(win.document);
+
               waitingDialog.hide();
             })
       }, 2000);
